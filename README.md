@@ -1,6 +1,6 @@
 # 🤖 AI Code Assistant Pro
 
-> **10 AI Personalities. Infinite Possibilities. Privacy-First Development.**
+> **5 AI Personalities. Expanding to 10+. Privacy-First Development.**
 
 [![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)](https://marketplace.visualstudio.com/items?itemName=hoiltd-com.ai-code-assistant-pro)
 [![Downloads](https://img.shields.io/visual-studio-marketplace/d/hoiltd-com.ai-code-assistant-pro?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=hoiltd-com.ai-code-assistant-pro)
@@ -9,13 +9,13 @@
 
 ## 🌟 Revolutionary AI-Powered Development
 
-**AI Code Assistant Pro** transforms your VS Code into an intelligent development powerhouse with **10 unique AI personalities**, each specialized for different aspects of software development. Built by **Home & Office Improvements Ltd** with **22+ years of innovation**.
+**AI Code Assistant Pro** transforms your VS Code into an intelligent development powerhouse with **5 specialized AI personalities**, each designed for different aspects of software development. Built by **Home & Office Improvements Ltd** with **22+ years of innovation**.
 
 ### 🚀 **[Install from VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=hoiltd-com.ai-code-assistant-pro)**
 
 ---
 
-## 🤖 Meet Your AI Development Team
+## 🤖 Meet Your Current AI Development Team
 
 | Personality | Specialty | What They Do |
 |------------|-----------|--------------|
@@ -24,11 +24,19 @@
 | 🔍 **Scout** | Analysis | Code review, bug detection, quality assessment |
 | 🛡️ **Guardian** | Security | Vulnerability scanning, secure coding practices |
 | 🎨 **Spark** | Innovation | Creative solutions, new technologies, brainstorming |
+
+## 🚀 Coming Soon - Expanding to 10+ Personalities!
+
+### 🔮 Roadmap - Next Release (v2.0)
+| Future Personality | Specialty | Planned Features |
+|-------------------|-----------|------------------|
 | 📝 **Scribe** | Documentation | Auto-docs, comments, technical writing |
 | 📊 **Metrics** | Analytics | Performance metrics, code statistics, insights |
 | ⚡ **Flash** | Automation | CI/CD, workflows, task automation |
 | �� **Honey** | Learning | Training, tutorials, knowledge sharing |
 | 🧪 **Tester** | Quality | Test generation, QA processes, validation |
+
+*More personalities in development based on community feedback!*
 
 ## ✨ Key Features
 
@@ -76,7 +84,9 @@
    ```
    ⚡ Ask Buzzy: "How can I optimize this function?"
    🔨 Ask Builder: "What's the best architecture for this feature?"
-   �� Ask Scout: "Review this code for potential issues"
+   🔍 Ask Scout: "Review this code for potential issues"
+   🛡️ Ask Guardian: "Check this code for security vulnerabilities"
+   🎨 Ask Spark: "Suggest innovative approaches for this problem"
    ```
 
 3. **Customize Your Experience:**
@@ -128,12 +138,53 @@ query = "SELECT * FROM users WHERE id = ?"
 cursor.execute(query, (user_id,))
 ```
 
+### Innovation with Spark
+```python
+# Spark suggests: "Try using async/await for better concurrency"
+# Traditional approach
+def process_data(items):
+    results = []
+    for item in items:
+        result = heavy_computation(item)
+        results.append(result)
+    return results
+
+# Spark's innovative approach
+async def process_data_async(items):
+    tasks = [heavy_computation_async(item) for item in items]
+    return await asyncio.gather(*tasks)
+```
+
 ## 🏢 Enterprise Solutions
 
 **🏢 Home & Office Improvements Ltd** brings you enterprise-grade AI with:
 - **22+ Years of Innovation** - Established 2003, Companies House: 04951269
 - **UK-Based Excellence** - British engineering and support
 - **Professional Support** - Enterprise-grade assistance
+- **Scalable Roadmap** - Growing from 5 to 10+ personalities
+
+## 🗺️ Development Roadmap
+
+### Version 1.0 (Current) ✅
+- **5 Core AI Personalities**
+- **Privacy-First Architecture**
+- **Local Processing**
+- **VS Code Integration**
+
+### Version 2.0 (Q4 2025) 🚧
+- **Expand to 10+ Personalities**
+- **Enhanced Documentation AI (Scribe)**
+- **Advanced Analytics (Metrics)**
+- **Automation Expert (Flash)**
+- **Learning Assistant (Honey)**
+- **Quality Assurance (Tester)**
+
+### Version 3.0 (2026) 🔮
+- **Custom Personality Training**
+- **Team Collaboration Features**
+- **Advanced Enterprise Integration**
+- **Web Version (vscode.dev)**
+- **API Integration Platform**
 
 ## 📞 Contact & Support
 
@@ -143,6 +194,45 @@ cursor.execute(query, (user_id,))
 - **🏢 Companies House:** 04951269
 - **📍 Location:** United Kingdom
 
+## 🤝 Community & Contributing
+
+### Get Involved
+- **⭐ Star this repo** if you find it useful
+- **🐛 Report bugs** to help us improve
+- **💡 Suggest personalities** for future releases
+- **📝 Share your experience** in discussions
+
+### Requesting New Personalities
+We're actively developing new AI personalities! Let us know what specialists you need:
+- **Documentation experts**
+- **Testing specialists**
+- **DevOps automation**
+- **Database optimization**
+- **Mobile development**
+- **And more!**
+
+## 📊 Current Status
+
+- **✅ Active Personalities:** 5 operational
+- **🔬 In Development:** 5+ additional personalities
+- **📈 Community:** Growing developer base
+- **🎯 Target:** 10+ personalities by end of 2025
+
 ---
 
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+<div align="center">
+
+**🚀 Ready to Transform Your Development Experience?**
+
+[![Install Now](https://img.shields.io/badge/Install%20Now-VS%20Code%20Marketplace-007ACC?style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=hoiltd-com.ai-code-assistant-pro)
+
 **Made in LONDON with ❤️ by [Home & Office Improvements Ltd](https://hoiltd.com)**
+*Starting with 5 personalities, expanding to 10+ based on your feedback!*
+
+</div>
