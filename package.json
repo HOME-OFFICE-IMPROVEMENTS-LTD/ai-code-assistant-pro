@@ -1,6 +1,7 @@
 {
   "name": "ai-code-assistant-pro-website",
   "version": "1.0.0",
+  "type": "module",
   "description": "Professional marketing website for AI Code Assistant Pro VS Code extension",
   "scripts": {
     "dev": "vite",
