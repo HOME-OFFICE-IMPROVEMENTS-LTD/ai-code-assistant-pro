@@ -1,0 +1,181 @@
+name: 🤖 AI Personality Suggestion
+description: Suggest a new AI personality for our expanding worker bee family
+title: "[Personality]: "
+labels: ["ai-personality", "community-request", "roadmap"]
+assignees:
+  - msalsouri
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        🐝 **Welcome to the Bee Hive Expansion Program!** 
+        
+        Your personality suggestions directly shape our roadmap from 5 to 10+ AI workers. 
+        The most requested personalities will be prioritized for development.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm you have completed the following
+      options:
+        - label: I have reviewed the existing 5 personalities (Buzzy, Builder, Scout, Guardian, Spark)
+          required: true
+        - label: I have checked if this personality concept already exists in issues
+          required: true
+
+  - type: input
+    id: personality-name
+    attributes:
+      label: 🏷️ Personality Name
+      description: What should this AI personality be called? (Keep it memorable and fun!)
+      placeholder: "e.g., Flash, Sage, Phoenix, Cipher, etc."
+    validations:
+      required: true
+
+  - type: input
+    id: specialty
+    attributes:
+      label: 🎯 Primary Specialty
+      description: What is this personality's main area of expertise?
+      placeholder: "e.g., Performance Optimization, UI/UX Design, API Testing, etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 📝 Personality Description
+      description: Describe this AI personality's character and approach
+      placeholder: |
+        Example: "Flash is the speed demon of the bee hive - always optimizing for performance and finding the fastest solutions. Known for rapid-fire suggestions and lightning-quick code analysis."
+    validations:
+      required: true
+
+  - type: textarea
+    id: capabilities
+    attributes:
+      label: ⚡ Key Capabilities
+      description: List the specific capabilities this personality would have
+      placeholder: |
+        • Code performance analysis and optimization suggestions
+        • Bundle size reduction recommendations  
+        • Memory usage optimization
+        • Loading time improvements
+        • Caching strategy recommendations
+    validations:
+      required: true
+
+  - type: textarea
+    id: commands
+    attributes:
+      label: 🎮 Suggested Commands
+      description: What commands would users type to interact with this personality?
+      placeholder: |
+        • /flash optimize - Analyze code for performance improvements
+        • /flash bundle - Check bundle size and suggest reductions
+        • /flash memory - Identify memory leaks and usage issues
+        • /flash cache - Recommend caching strategies
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: 🔧 Real-World Use Cases
+      description: Provide specific scenarios where this personality would be valuable
+      placeholder: |
+        1. When a developer notices their app is loading slowly...
+        2. Before deploying to production, checking for performance bottlenecks...
+        3. When bundle size is too large for mobile users...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: personality-trait
+    attributes:
+      label: 🎭 Personality Trait
+      description: How does this AI personality communicate?
+      options:
+        - "⚡ Energetic and Fast-paced"
+        - "🎓 Wise and Methodical"
+        - "🎨 Creative and Innovative"
+        - "🔬 Analytical and Precise"
+        - "😊 Friendly and Encouraging"
+        - "💼 Professional and Direct"
+        - "🎪 Playful and Fun"
+        - "🛡️ Protective and Cautious"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority-gap
+    attributes:
+      label: 📊 Development Priority Gap
+      description: How important is this personality for the ecosystem?
+      options:
+        - "🔥 Critical Gap - Essential missing capability"
+        - "📈 High Priority - Would complete a major workflow"
+        - "📊 Medium Priority - Nice addition to the team"
+        - "💡 Future Addition - Interesting for long-term roadmap"
+    validations:
+      required: true
+
+  - type: textarea
+    id: integration
+    attributes:
+      label: 🔗 Integration with Existing Personalities
+      description: How would this personality work with our current 5 bees?
+      placeholder: |
+        • Could collaborate with Builder on architectural performance
+        • Would complement Guardian by focusing on security-performance balance
+        • Could work with Scout to analyze performance patterns
+    validations:
+      required: true
+
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: 🎯 Implementation Complexity
+      description: How complex do you think this personality would be to implement?
+      options:
+        - "🟢 Simple - Similar to existing capabilities"
+        - "🟡 Moderate - Some new integrations needed"
+        - "🟠 Complex - Significant new functionality required"
+        - "🔴 Advanced - Cutting-edge AI capabilities needed"
+
+  - type: textarea
+    id: inspiration
+    attributes:
+      label: 💡 Inspiration & Examples
+      description: Any existing tools, personalities, or concepts that inspired this idea?
+      placeholder: "Inspired by tools like..., or similar to personalities in..."
+
+  - type: checkboxes
+    id: community-engagement
+    attributes:
+      label: 🤝 Community Engagement
+      description: How would you like to be involved?
+      options:
+        - label: I'd like to beta test this personality when available
+        - label: I can provide detailed feedback during development
+        - label: I'd be willing to help with testing and use case validation
+        - label: I could contribute to documentation for this personality
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: ✨ Additional Ideas
+      description: Any other thoughts, features, or enhancements for this personality?
+
+  - type: checkboxes
+    id: voting
+    attributes:
+      label: 🗳️ Community Voting
+      description: Understanding community priorities
+      options:
+        - label: I believe this personality would benefit many developers, not just my specific use case
+          required: true
+        - label: I understand that community feedback and votes influence development priority
+          required: true
