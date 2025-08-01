@@ -60,23 +60,3 @@ updates:
         update-types: ["version-update:semver-major"]
     # Allow Dependabot to update lockfiles
     versioning-strategy: "increase"
-
-  # Monitor GitHub Actions if we add any workflows
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "10:00"
-      timezone: "Europe/London"
-    open-pull-requests-limit: 3
-    assignees:
-      - "msalsouri"
-    reviewers:
-      - "msalsouri"
-    commit-message:
-      prefix: "⬆️ actions"
-      include: "scope"
-    labels:
-      - "github-actions"
-      - "ci-cd"
