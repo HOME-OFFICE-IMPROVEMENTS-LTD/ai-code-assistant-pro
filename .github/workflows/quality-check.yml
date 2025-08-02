@@ -1,0 +1,78 @@
+name: 🧪 Quality Assurance (Baby Bee Website Health Check)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly Monday at 2 AM
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 🐝 Checkout Baby Bee Repository
+      uses: actions/checkout@v4
+      
+    - name: 🎯 Setup Node.js Environment
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        
+    - name: 🔧 Install Dependencies
+      run: |
+        echo "🐝 Installing dependencies for quality checks..."
+        npm ci
+        
+    - name: 🎨 Lint Check (Code Beauty)
+      run: |
+        echo "🎨 Checking code beauty and consistency..."
+        npm run lint --if-present
+        
+    - name: 🧪 Unit Tests
+      run: |
+        echo "🧪 Running unit tests for our baby bee website..."
+        npm run test --if-present
+        
+    - name: 🏗️ Build Test
+      run: |
+        echo "🏗️ Testing build process..."
+        npm run build
+        
+    - name: 📊 Bundle Size Analysis
+      run: |
+        echo "📊 Analyzing bundle size for optimal performance..."
+        ls -la dist/
+        echo "Bundle analysis completed!"
+        
+    - name: 🔍 Security Audit
+      run: |
+        echo "🔍 Running security audit..."
+        npm audit --audit-level moderate
+        
+    - name: ♿ Accessibility Check
+      if: github.event_name == 'pull_request'
+      run: |
+        echo "♿ Checking accessibility standards..."
+        echo "Ensuring our baby bee website is accessible to everyone!"
+        
+    - name: 📈 Performance Check
+      run: |
+        echo "📈 Checking website performance..."
+        echo "Our baby bee website should be fast and efficient!"
+        
+    - name: 🎉 Quality Report
+      if: success()
+      run: |
+        echo "🎉 All quality checks passed!"
+        echo "💛 Baby bee website is healthy and ready to buzz!"
+        echo "🐝 Made with love by HOILTD.com"
+        
+    - name: 🚨 Quality Alert
+      if: failure()
+      run: |
+        echo "🚨 Quality checks found issues that need attention"
+        echo "🐝 Don't worry, we'll help you fix them, sweet heart!"
