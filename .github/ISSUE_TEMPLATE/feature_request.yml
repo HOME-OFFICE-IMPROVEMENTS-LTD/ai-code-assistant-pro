@@ -1,0 +1,150 @@
+name: 🚀 Feature Request
+description: Suggest a new feature or enhancement for AI Code Assistant Pro
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees:
+  - msalsouri
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Your feedback directly influences our roadmap development.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm you have completed the following
+      options:
+        - label: I have searched existing issues to ensure this feature hasn't been requested
+          required: true
+        - label: I have checked the roadmap in README.md to see if this is already planned
+          required: true
+
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: Feature Type
+      description: What type of feature are you requesting?
+      options:
+        - "🤖 New AI Personality"
+        - "✨ Enhancement to existing personality"
+        - "🔧 New functionality/command"
+        - "🎨 UI/UX improvement"
+        - "⚙️ Configuration option"
+        - "🔄 Integration with other tools"
+        - "📊 Analytics/reporting"
+        - "🏢 Enterprise feature"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? What's the current pain point?
+      placeholder: "As a developer, I find it difficult to... because..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your ideal solution to this problem
+      placeholder: "I would like to see..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: personality-details
+    attributes:
+      label: AI Personality Details (if applicable)
+      description: If requesting a new AI personality, provide detailed specifications
+      placeholder: |
+        Personality Name: 
+        Specialty: 
+        Key Capabilities:
+        - 
+        - 
+        - 
+        Example Use Cases:
+        - 
+        - 
+        Why this personality is needed:
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority for Your Workflow
+      description: How important is this feature to your development workflow?
+      options:
+        - "🔥 Critical - Would significantly improve my daily workflow"
+        - "📈 High - Would be very useful and save time"
+        - "📊 Medium - Would be nice to have"
+        - "💡 Low - Interesting idea but not urgent"
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: "I've tried... but it doesn't work because..."
+
+  - type: dropdown
+    id: user-type
+    attributes:
+      label: User Type
+      description: What best describes your development context?
+      options:
+        - "Solo developer"
+        - "Small team (2-5 developers)"
+        - "Medium team (6-15 developers)"
+        - "Large team (16+ developers)"
+        - "Enterprise/Corporate"
+        - "Open source contributor"
+        - "Student/Learning"
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: Detailed Use Cases
+      description: Provide specific examples of how you would use this feature
+      placeholder: |
+        1. When working on [specific task], I would...
+        2. In [specific scenario], this feature would help by...
+        3. For [specific workflow], I could...
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context, mockups, screenshots, or examples
+      placeholder: Links to similar features in other tools, mockups, or detailed specifications
+
+  - type: checkboxes
+    id: community
+    attributes:
+      label: Community Input
+      description: Help us prioritize this feature
+      options:
+        - label: I would be willing to beta test this feature
+        - label: I would be interested in contributing to the development of this feature
+        - label: I can provide additional feedback and use cases if needed
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our Code of Conduct
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
