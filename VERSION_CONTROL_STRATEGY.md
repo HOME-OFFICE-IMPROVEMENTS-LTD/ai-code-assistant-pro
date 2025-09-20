@@ -2,10 +2,10 @@
 
 ## 🎯 Single Source of Truth
 
-**Canonical Version: 1.0.4**
-- **Location**: `/home/msalsouri/Projects/ai-code-assistant-pro/ai-code-assistant-pro-1.0.4.vsix`
-- **Status**: Production ready with all fixes, newer than marketplace version
-- **Features**: Working buttons, Ollama integration, 10 AI personalities
+**Canonical Version: 1.0.5**
+- **Location**: `/home/msalsouri/Projects/ai-code-assistant-pro/ai-code-assistant-pro-1.0.5.vsix`
+- **Status**: Production ready with all fixes, newer than marketplace version, fixed connection status
+- **Features**: Working buttons, Ollama integration, 10 AI personalities, correct status display
 
 ## 📋 Version Management Rules
 
@@ -55,10 +55,10 @@
 
 ## 📁 Current State
 
-**Active Version**: 1.0.4
-**Location**: `ai-code-assistant-pro-1.0.4.vsix`
+**Active Version**: 1.0.5
+**Location**: `ai-code-assistant-pro-1.0.5.vsix`
 **Installation**: Clean, single version in VS Code
-**Status**: ✅ Working with Ollama integration, newer than marketplace (1.0.3)
+**Status**: ✅ Working with Ollama integration, newer than marketplace (1.0.3), fixed connection status
 
 ## 🔄 Future Updates
 
