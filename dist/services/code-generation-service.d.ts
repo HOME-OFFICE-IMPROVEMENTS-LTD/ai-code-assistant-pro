@@ -37,6 +37,6 @@ export declare class CodeGenerationService {
         [key: string]: any;
     }>;
     private getPersonalityActions;
-    generateSmartSuggestions(context: string): Promise<string[]>;
+    generateSmartSuggestions(): Promise<string[]>;
 }
 //# sourceMappingURL=code-generation-service.d.ts.map

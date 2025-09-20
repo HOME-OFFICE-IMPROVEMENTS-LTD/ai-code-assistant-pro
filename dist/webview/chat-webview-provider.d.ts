@@ -7,10 +7,10 @@ export declare class ChatWebviewProvider implements vscode.WebviewViewProvider {
     private _view?;
     private _panel?;
     constructor(_extensionUri: vscode.Uri, _codeGenerationService: CodeGenerationService);
-    resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext, _token: vscode.CancellationToken): void;
+    resolveWebviewView(webviewView: vscode.WebviewView): void;
     setWebviewPanel(panel: vscode.WebviewPanel): void;
     private handleMessage;
     private handleUserMessage;
-    getWebviewContent(webview: vscode.Webview): string;
+    getWebviewContent(): string;
 }
 //# sourceMappingURL=chat-webview-provider.d.ts.map

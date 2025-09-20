@@ -169,7 +169,7 @@ export class LocalLLMService {
         // If specific model requested and available
         if (preference) {
             const preferred = this.availableModels.find(m => m.id === preference || m.name === preference);
-            if (preferred) return preferred;
+            if (preferred) {return preferred;}
         }
 
         // Try preferred models in order
@@ -177,14 +177,14 @@ export class LocalLLMService {
             const model = this.availableModels.find(m => 
                 m.id.includes(preferredModel) || m.name.includes(preferredModel)
             );
-            if (model) return model;
+            if (model) {return model;}
         }
 
         // Fallback to any available code model
         const codeModel = this.availableModels.find(m => 
             m.capabilities.includes('code-generation')
         );
-        if (codeModel) return codeModel;
+        if (codeModel) {return codeModel;}
 
         // Last resort: any available model
         return this.availableModels[0];

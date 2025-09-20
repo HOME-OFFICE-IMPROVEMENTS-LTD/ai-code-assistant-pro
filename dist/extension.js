@@ -56,7 +56,7 @@ function activate(context) {
             enableScripts: true,
             localResourceRoots: [context.extensionUri]
         });
-        panel.webview.html = chatProvider.getWebviewContent(panel.webview);
+        panel.webview.html = chatProvider.getWebviewContent();
         chatProvider.setWebviewPanel(panel);
     });
     // Command: Ask Buzzy (Performance Expert)
@@ -113,8 +113,9 @@ function activate(context) {
             prompt: '🧠 Describe what code you want to generate',
             placeHolder: 'e.g., Create a REST API endpoint for user authentication...'
         });
-        if (!prompt)
+        if (!prompt) {
             return;
+        }
         const personality = await vscode.window.showQuickPick([
             { label: '⚡ Buzzy', description: 'Performance-optimized code', value: 'buzzy' },
             { label: '🔨 Builder', description: 'Well-architected, scalable code', value: 'builder' },
@@ -124,8 +125,9 @@ function activate(context) {
         ], {
             placeHolder: 'Choose AI personality for code generation'
         });
-        if (!personality)
+        if (!personality) {
             return;
+        }
         vscode.window.withProgress({
             location: vscode.ProgressLocation.Notification,
             title: `🤖 ${personality.label} is generating code...`,
@@ -193,8 +195,58 @@ function activate(context) {
             });
         });
     });
+    // Command: Configure Models
+    const configureModelsCommand = vscode.commands.registerCommand('aiCodePro.configureModels', () => {
+        vscode.commands.executeCommand('workbench.action.openSettings', 'aiCodePro');
+    });
+    // Command: Connect to Local LLMs
+    const connectModelsCommand = vscode.commands.registerCommand('aiCodePro.connectModels', async () => {
+        const models = await localLLMService.discoverModels();
+        if (models.length > 0) {
+            vscode.window.showInformationMessage(`🧠 Connected to ${models.length} local LLM model(s): ${models.map(m => m.name).join(', ')}`);
+        }
+        else {
+            vscode.window.showWarningMessage('🤖 No local LLM models found. Please ensure Ollama or LocalAI is running.');
+        }
+    });
+    // Command: Show Model Stats
+    const showModelStatsCommand = vscode.commands.registerCommand('aiCodePro.showModelStats', async () => {
+        const models = localLLMService.getAvailableModels();
+        if (models.length === 0) {
+            vscode.window.showInformationMessage('🧠 No models connected. Click "Connect to Local LLMs" first.');
+            return;
+        }
+        const statsPanel = vscode.window.createWebviewPanel('aiCodeProModelStats', '📊 Model Statistics', vscode.ViewColumn.Two, { enableScripts: true });
+        const modelsList = models.map(model => `<div class="model-item">
+                <h3>🧠 ${model.name}</h3>
+                <p><strong>Size:</strong> ${model.size}</p>
+                <p><strong>Status:</strong> ${model.status}</p>
+                <p><strong>Capabilities:</strong> ${model.capabilities.join(', ')}</p>
+            </div>`).join('');
+        statsPanel.webview.html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <style>
+                    body { font-family: var(--vscode-font-family); padding: 20px; }
+                    .model-item { border: 1px solid var(--vscode-panel-border); padding: 15px; margin: 10px 0; border-radius: 5px; }
+                    h3 { margin-top: 0; color: var(--vscode-textLink-foreground); }
+                </style>
+            </head>
+            <body>
+                <h1>📊 Local LLM Model Statistics</h1>
+                ${modelsList || '<p>No models available</p>'}
+            </body>
+            </html>
+        `;
+    });
+    // Command: Model Settings
+    const modelSettingsCommand = vscode.commands.registerCommand('aiCodePro.modelSettings', () => {
+        vscode.commands.executeCommand('workbench.action.openSettings', 'aiCodePro.localLLMEndpoint');
+    });
     // Register all commands
-    context.subscriptions.push(showChatCommand, askBuzzyCommand, askBuilderCommand, askScoutCommand, askGuardianCommand, generateCodeCommand, explainCodeCommand, optimizeCodeCommand);
+    context.subscriptions.push(showChatCommand, askBuzzyCommand, askBuilderCommand, askScoutCommand, askGuardianCommand, generateCodeCommand, explainCodeCommand, optimizeCodeCommand, configureModelsCommand, connectModelsCommand, showModelStatsCommand, modelSettingsCommand);
     // Show welcome message
     vscode.window.showInformationMessage('🤖 AI Code Assistant Pro activated! 10 AI personalities ready to help.', 'Open AI Chat', 'View Personalities').then(selection => {
         if (selection === 'Open AI Chat') {

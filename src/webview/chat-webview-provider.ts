@@ -13,8 +13,6 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
 
     public resolveWebviewView(
         webviewView: vscode.WebviewView,
-        context: vscode.WebviewViewResolveContext,
-        _token: vscode.CancellationToken,
     ) {
         this._view = webviewView;
 
@@ -23,7 +21,7 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
             localResourceRoots: [this._extensionUri]
         };
 
-        webviewView.webview.html = this.getWebviewContent(webviewView.webview);
+        webviewView.webview.html = this.getWebviewContent();
 
         webviewView.webview.onDidReceiveMessage(
             message => this.handleMessage(message),
@@ -52,7 +50,7 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
 
     private async handleUserMessage(text: string, personality: string) {
         const webview = this._panel?.webview || this._view?.webview;
-        if (!webview) return;
+        if (!webview) {return;}
 
         // Show typing indicator
         webview.postMessage({
@@ -77,7 +75,7 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
         }
     }
 
-    public getWebviewContent(webview: vscode.Webview): string {
+    public getWebviewContent(): string {
         return `<!DOCTYPE html>
         <html lang="en">
         <head>

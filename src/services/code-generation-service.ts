@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { LocalLLMService, LLMResponse } from './local-llm-service';
+import { LocalLLMService } from './local-llm-service';
 import { AIPersonalityService, AIPersonality } from './ai-personality-service';
 
 export interface CodeGenerationRequest {
@@ -174,12 +174,10 @@ Response format:
     private detectTestFramework(): string {
         // Try to detect test framework from workspace
         const workspaceFolders = vscode.workspace.workspaceFolders;
-        if (!workspaceFolders) return 'Jest';
+        if (!workspaceFolders) {return 'Jest';}
 
-        // Check package.json for test frameworks
-        const possibleFrameworks = ['Jest', 'Mocha', 'Jasmine', 'Vitest', 'PyTest', 'JUnit'];
-        
         // For now, default to Jest (most popular)
+        // TODO: Check package.json for test frameworks like Jest, Mocha, Jasmine, Vitest, PyTest, JUnit
         return 'Jest';
     }
 
@@ -229,7 +227,7 @@ Response format:
         return [...commonActions, ...(specializedActions[personalityId] || [])];
     }
 
-    async generateSmartSuggestions(context: string): Promise<string[]> {
+    async generateSmartSuggestions(): Promise<string[]> {
         const suggestions = [
             "🤖 Ask any personality for help with your code",
             "⚡ Optimize performance with Buzzy",

@@ -2,7 +2,7 @@
   "name": "ai-code-assistant-pro",
   "displayName": "🤖 AI Code Assistant Pro - 20+ Local LLMs",
   "description": "Privacy-first AI coding assistant with 10 unique personalities and 20+ local LLM models. No API costs, works offline, enterprise-grade security.",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "publisher": "hoiltd-com",
   "icon": "resources/icon.png",
   "galleryBanner": {
@@ -99,6 +99,26 @@
         "command": "aiCodePro.writeDocumentation",
         "title": "📝 Generate Docs",
         "category": "AI Code Pro"
+      },
+      {
+        "command": "aiCodePro.configureModels",
+        "title": "⚙️ Configure Models",
+        "category": "AI Code Pro"
+      },
+      {
+        "command": "aiCodePro.connectModels",
+        "title": "🔗 Connect to Local LLMs",
+        "category": "AI Code Pro"
+      },
+      {
+        "command": "aiCodePro.showModelStats",
+        "title": "📊 Model Performance",
+        "category": "AI Code Pro"
+      },
+      {
+        "command": "aiCodePro.modelSettings",
+        "title": "⚙️ Settings",
+        "category": "AI Code Pro"
       }
     ],
     "views": {
@@ -127,7 +147,7 @@
       },
       {
         "view": "aiCodePro.models",
-        "contents": "🧠 **Local LLM Models**\n\nStatus: Not Connected\n\n[🔗 Connect to Local LLMs](command:aiCodePro.connectModels)\n[📊 Model Performance](command:aiCodePro.showModelStats)\n[⚙️ Settings](command:aiCodePro.modelSettings)"
+        "contents": "🧠 **Local LLM Models**\n\nStatus: ✅ Connected to Ollama\nModel: dolphin-mixtral:8x7b\n\n[🔗 Connect to Local LLMs](command:aiCodePro.connectModels)\n[📊 Model Performance](command:aiCodePro.showModelStats)\n[⚙️ Settings](command:aiCodePro.modelSettings)"
       }
     ],
     "menus": {

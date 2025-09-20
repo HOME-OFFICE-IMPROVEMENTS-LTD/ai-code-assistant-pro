@@ -155,11 +155,11 @@ Response format:
     detectTestFramework() {
         // Try to detect test framework from workspace
         const workspaceFolders = vscode.workspace.workspaceFolders;
-        if (!workspaceFolders)
+        if (!workspaceFolders) {
             return 'Jest';
-        // Check package.json for test frameworks
-        const possibleFrameworks = ['Jest', 'Mocha', 'Jasmine', 'Vitest', 'PyTest', 'JUnit'];
+        }
         // For now, default to Jest (most popular)
+        // TODO: Check package.json for test frameworks like Jest, Mocha, Jasmine, Vitest, PyTest, JUnit
         return 'Jest';
     }
     detectLanguage() {
@@ -201,7 +201,7 @@ Response format:
         };
         return [...commonActions, ...(specializedActions[personalityId] || [])];
     }
-    async generateSmartSuggestions(context) {
+    async generateSmartSuggestions() {
         const suggestions = [
             "🤖 Ask any personality for help with your code",
             "⚡ Optimize performance with Buzzy",

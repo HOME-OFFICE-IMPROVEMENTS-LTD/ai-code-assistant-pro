@@ -1,7 +1,7 @@
 # 🎯 AI Code Assistant Pro - Customer-Centric Local LLM Setup
 
 [![VS Code Marketplace](https://img.shields.io/badge/VS%20Code-Marketplace-blue?logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=hoiltd-com.ai-code-assistant-pro)
-[![Version](https://img.shields.io/badge/version-1.0.0-green)](https://marketplace.visualstudio.com/items?itemName=hoiltd-com.ai-code-assistant-pro)
+[![Version](https://img.shields.io/badge/version-1.0.2-green)](https://marketplace.visualstudio.com/items?itemName=hoiltd-com.ai-code-assistant-pro)
 [![Customer Success](https://img.shields.io/badge/success%20rate-95%25-brightgreen)](https://marketplace.visualstudio.com/items?itemName=hoiltd-com.ai-code-assistant-pro)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
@@ -381,7 +381,7 @@ We welcome contributions! Please see our comprehensive guides:
 
 ## 📈 Roadmap & Future Features
 
-### **Version 1.1.0 (Current)**
+### **Version 1.0.2 (Current)**
 
 - ✅ Complete 10-personality beehive system
 - ✅ Local LLM integration (Ollama, LocalAI, Jan)

@@ -6,13 +6,13 @@ class ChatWebviewProvider {
         this._extensionUri = _extensionUri;
         this._codeGenerationService = _codeGenerationService;
     }
-    resolveWebviewView(webviewView, context, _token) {
+    resolveWebviewView(webviewView) {
         this._view = webviewView;
         webviewView.webview.options = {
             enableScripts: true,
             localResourceRoots: [this._extensionUri]
         };
-        webviewView.webview.html = this.getWebviewContent(webviewView.webview);
+        webviewView.webview.html = this.getWebviewContent();
         webviewView.webview.onDidReceiveMessage(message => this.handleMessage(message), undefined, []);
     }
     setWebviewPanel(panel) {
@@ -28,8 +28,9 @@ class ChatWebviewProvider {
     }
     async handleUserMessage(text, personality) {
         const webview = this._panel?.webview || this._view?.webview;
-        if (!webview)
+        if (!webview) {
             return;
+        }
         // Show typing indicator
         webview.postMessage({
             type: 'aiTyping',
@@ -51,7 +52,7 @@ class ChatWebviewProvider {
             });
         }
     }
-    getWebviewContent(webview) {
+    getWebviewContent() {
         return `<!DOCTYPE html>
         <html lang="en">
         <head>
