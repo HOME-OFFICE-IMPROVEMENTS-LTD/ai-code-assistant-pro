@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+test/
+coverage/
+.github/
+docs/
+marketing/
+website/
+
+# Build files
+*.vsix
+*.tgz
+.vscode-test/
+out/
+
+# Development files
+.vscode/
+.git/
+.gitignore
+*.log
+npm-debug.log*
+
+# Documentation source
+**/*.md
+!README.md
+!CHANGELOG.md
+
+# Test files
+**/*.test.ts
+**/*.spec.ts
+jest.config.js
+
+# TypeScript source (we include compiled JS in out/)
+src/**/*.ts
+!out/**/*
+
+# Config files
+tsconfig.json
+eslint.config.js
+.eslintrc*
+.prettierrc*
+
+# OS files
+.DS_Store
+Thumbs.db
