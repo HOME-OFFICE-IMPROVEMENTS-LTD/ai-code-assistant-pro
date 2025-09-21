@@ -28,6 +28,8 @@ export declare class LocalLLMService {
     private calculateResponseQuality;
     private recordPerformanceMetric;
     private validatePersonalityResponse;
+    private generateExpertiseBasedResponse;
+    private ensureQualityStandards;
     private generateVSCodeSpecificHelp;
     getPerformanceStats(modelId: string): {
         avgResponseTime: number;
