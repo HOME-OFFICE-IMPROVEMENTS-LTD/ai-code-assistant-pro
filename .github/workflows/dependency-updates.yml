@@ -6,19 +6,27 @@ on:
     - cron: '0 9 * * 1'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+  security-events: write
+
 jobs:
   update-dependencies:
     name: Update Dependencies
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v4.1.6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
       with:
         node-version: '18'
         cache: 'npm'
@@ -39,7 +47,7 @@ jobs:
       run: npm audit --audit-level=moderate
       
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@70a41aba780001da0a30141984ae2a0c95d8704e # v6.0.2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         commit-message: 'chore: update dependencies to latest compatible versions'
@@ -59,13 +67,16 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v4.1.6
       
     - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@master
+      uses: aquasecurity/trivy-action@062f2592684a31eb3aa050cc61e7ca1451cecd3d # v0.18.0
       with:
         scan-type: 'fs'
         scan-ref: '.'
@@ -73,7 +84,7 @@ jobs:
         output: 'trivy-results.sarif'
         
     - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@cdcdbb579706841c47f7063dda365e292e5cad7a # v2.13.4
       if: always()
       with:
         sarif_file: 'trivy-results.sarif'

@@ -6,17 +6,23 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  actions: read
+
 jobs:
   quick-check:
     name: Quick Quality Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v4.1.6
       
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
       with:
         node-version: '18'
         cache: 'npm'
@@ -49,13 +55,15 @@ jobs:
   dependency-check:
     name: Dependency Security Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v4.1.6
       
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
       with:
         node-version: '18'
         cache: 'npm'

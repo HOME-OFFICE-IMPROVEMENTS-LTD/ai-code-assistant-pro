@@ -7,17 +7,25 @@ on:
     branches: [ main, develop ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+  checks: write
+  pull-requests: write
+
 jobs:
   lint:
     name: Lint & Type Check
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: read
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v4.1.6
       
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
       with:
         node-version: '18'
         cache: 'npm'
@@ -34,13 +42,15 @@ jobs:
   test:
     name: Test Suite
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v4.1.6
       
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
       with:
         node-version: '18'
         cache: 'npm'
@@ -52,7 +62,7 @@ jobs:
       run: npm run test:coverage
       
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@54bcd8715eee62d40e33596ef5e8f0f48dbbccab # v4.1.0
       with:
         file: ./coverage/lcov.info
         flags: unittests
@@ -63,13 +73,17 @@ jobs:
   security:
     name: Security Audit
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v4.1.6
       
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
       with:
         node-version: '18'
         cache: 'npm'
@@ -81,27 +95,30 @@ jobs:
       run: npm audit --audit-level=moderate
       
     - name: Run CodeQL Analysis
-      uses: github/codeql-action/init@v3
+      uses: github/codeql-action/init@cdcdbb579706841c47f7063dda365e292e5cad7a # v2.13.4
       with:
         languages: typescript, javascript
         
     - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+      uses: github/codeql-action/autobuild@cdcdbb579706841c47f7063dda365e292e5cad7a # v2.13.4
       
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
+      uses: github/codeql-action/analyze@cdcdbb579706841c47f7063dda365e292e5cad7a # v2.13.4
 
   build:
     name: Build Extension
     runs-on: ubuntu-latest
     needs: [lint, test, security]
+    permissions:
+      contents: read
+      actions: write
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v4.1.6
       
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
       with:
         node-version: '18'
         cache: 'npm'
@@ -116,7 +133,7 @@ jobs:
       run: npm run package
       
     - name: Upload VSIX artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
       with:
         name: vsix-package
         path: '*.vsix'
@@ -125,6 +142,8 @@ jobs:
   compatibility-test:
     name: VS Code Compatibility Test
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -132,10 +151,10 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v4.1.6
       
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
       with:
         node-version: '18'
         cache: 'npm'
@@ -144,7 +163,7 @@ jobs:
       run: npm ci
       
     - name: Run VS Code extension tests
-      uses: GabrielBB/xvfb-action@v1
+      uses: GabrielBB/xvfb-action@86d97bde4a65fe9b290c0b3fb92c2c4ed0e5302d # v1.6
       with:
         run: npm test
       env:
@@ -154,6 +173,8 @@ jobs:
     name: Quality Gate
     runs-on: ubuntu-latest
     needs: [lint, test, security, build]
+    permissions:
+      contents: read
     if: always()
     
     steps:
@@ -175,14 +196,17 @@ jobs:
     name: Release to Marketplace
     runs-on: ubuntu-latest
     needs: [quality-gate, compatibility-test]
+    permissions:
+      contents: write
+      actions: read
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v4.1.6
       
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
       with:
         node-version: '18'
         cache: 'npm'
@@ -191,7 +215,7 @@ jobs:
       run: npm ci
       
     - name: Download VSIX artifact
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@eaceaf801fd36c7dee90e5e4c99c9d0c5c7bfe62 # v4.1.2
       with:
         name: vsix-package
         
@@ -202,7 +226,7 @@ jobs:
       if: env.VSCE_PAT != ''
         
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v0.1.15
       with:
         tag_name: v${{ github.run_number }}
         name: Release v${{ github.run_number }}
