@@ -34,7 +34,7 @@ export class AIPersonalityService {
                 
                 Always provide specific, actionable optimization recommendations with measurable impact.
                 Be direct and results-focused. Include performance metrics when possible.`,
-                preferredModels: ['codellama', 'deepseek-coder'],
+                preferredModels: ['deepseek-coder', 'codellama', 'codegemma'],
                 interactionStyle: 'concise',
                 expertise: ['performance', 'optimization', 'algorithms', 'scaling', 'profiling']
             },
@@ -53,7 +53,7 @@ export class AIPersonalityService {
                 
                 Provide well-structured, enterprise-grade architectural solutions.
                 Consider long-term maintainability and team collaboration.`,
-                preferredModels: ['codellama', 'codegemma'],
+                preferredModels: ['dolphin-mixtral', 'mistral', 'codellama'],
                 interactionStyle: 'detailed',
                 expertise: ['architecture', 'design-patterns', 'microservices', 'scalability', 'systems-design']
             },
@@ -72,7 +72,7 @@ export class AIPersonalityService {
                 
                 Provide thorough code reviews with specific improvement suggestions.
                 Focus on maintainability, readability, and best practices.`,
-                preferredModels: ['deepseek-coder', 'codellama'],
+                preferredModels: ['deepseek-coder', 'codellama', 'codegemma'],
                 interactionStyle: 'technical',
                 expertise: ['code-review', 'quality-assurance', 'refactoring', 'testing', 'documentation']
             },
@@ -91,7 +91,7 @@ export class AIPersonalityService {
                 
                 Always prioritize security in your recommendations.
                 Identify potential security risks and provide mitigation strategies.`,
-                preferredModels: ['codellama', 'deepseek-coder'],
+                preferredModels: ['deepseek-coder', 'codellama', 'codegemma'],
                 interactionStyle: 'technical',
                 expertise: ['security', 'vulnerabilities', 'encryption', 'authentication', 'compliance']
             },

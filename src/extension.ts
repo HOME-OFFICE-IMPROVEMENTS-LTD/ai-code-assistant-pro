@@ -3,6 +3,7 @@ import { AIPersonalityService } from './services/ai-personality-service';
 import { LocalLLMService } from './services/local-llm-service';
 import { CodeGenerationService } from './services/code-generation-service';
 import { ChatWebviewProvider } from './webview/chat-webview-provider';
+import { ModelsTreeDataProvider } from './providers/models-tree-provider';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('🤖 AI Code Assistant Pro is now active!');
@@ -15,10 +16,22 @@ export function activate(context: vscode.ExtensionContext) {
     // Initialize webview provider
     const chatProvider = new ChatWebviewProvider(context.extensionUri, codeGenerationService);
     
-    // Register webview
+    // Initialize tree data provider for models
+    const modelsTreeProvider = new ModelsTreeDataProvider(localLLMService);
+    
+    // Register webview and tree provider
     context.subscriptions.push(
-        vscode.window.registerWebviewViewProvider('aiCodePro.chat', chatProvider)
+        vscode.window.registerWebviewViewProvider('aiCodePro.chat', chatProvider),
+        vscode.window.createTreeView('aiCodePro.models', {
+            treeDataProvider: modelsTreeProvider,
+            showCollapseAll: false
+        })
     );
+
+    // Auto-discover models on startup
+    localLLMService.discoverModels().then(() => {
+        modelsTreeProvider.refresh();
+    });
 
     // Command: Show AI Chat
     const showChatCommand = vscode.commands.registerCommand('aiCodePro.showChat', () => {
@@ -215,6 +228,7 @@ export function activate(context: vscode.ExtensionContext) {
         const models = await localLLMService.discoverModels();
         if (models.length > 0) {
             vscode.window.showInformationMessage(`🧠 Connected to ${models.length} local LLM model(s): ${models.map(m => m.name).join(', ')}`);
+            modelsTreeProvider.refresh(); // Refresh the tree view
         } else {
             vscode.window.showWarningMessage('🤖 No local LLM models found. Please ensure Ollama or LocalAI is running.');
         }

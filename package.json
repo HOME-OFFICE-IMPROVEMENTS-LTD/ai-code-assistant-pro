@@ -2,9 +2,9 @@
   "name": "ai-code-assistant-pro",
   "displayName": "🤖 AI Code Assistant Pro - 20+ Local LLMs",
   "description": "Privacy-first AI coding assistant with 10 unique personalities and 20+ local LLM models. No API costs, works offline, enterprise-grade security.",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "publisher": "hoiltd-com",
-  "icon": "resources/icon.png",
+  "icon": "images/icon.png",
   "galleryBanner": {
     "color": "#4CAF50",
     "theme": "dark"
@@ -121,8 +121,17 @@
         "category": "AI Code Pro"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ai-code-pro-activity",
+          "title": "AI Code Assistant Pro",
+          "icon": "$(robot)"
+        }
+      ]
+    },
     "views": {
-      "explorer": [
+      "ai-code-pro-activity": [
         {
           "id": "aiCodePro.personalities",
           "name": "🤖 AI Personalities",
@@ -198,8 +207,8 @@
           "items": {
             "type": "string"
           },
-          "default": ["codellama", "deepseek-coder", "codegemma"],
-          "description": "Preferred local LLM models for code generation"
+          "default": ["codellama", "deepseek-coder", "mistral", "dolphin-mixtral"],
+          "description": "Your preferred local LLM models. Extension will automatically detect available models and use the best match for each task."
         },
         "aiCodePro.autoExplainOnSelect": {
           "type": "boolean",

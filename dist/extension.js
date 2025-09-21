@@ -40,6 +40,7 @@ const ai_personality_service_1 = require("./services/ai-personality-service");
 const local_llm_service_1 = require("./services/local-llm-service");
 const code_generation_service_1 = require("./services/code-generation-service");
 const chat_webview_provider_1 = require("./webview/chat-webview-provider");
+const models_tree_provider_1 = require("./providers/models-tree-provider");
 function activate(context) {
     console.log('🤖 AI Code Assistant Pro is now active!');
     // Initialize services
@@ -48,8 +49,17 @@ function activate(context) {
     const codeGenerationService = new code_generation_service_1.CodeGenerationService(localLLMService, aiPersonalityService);
     // Initialize webview provider
     const chatProvider = new chat_webview_provider_1.ChatWebviewProvider(context.extensionUri, codeGenerationService);
-    // Register webview
-    context.subscriptions.push(vscode.window.registerWebviewViewProvider('aiCodePro.chat', chatProvider));
+    // Initialize tree data provider for models
+    const modelsTreeProvider = new models_tree_provider_1.ModelsTreeDataProvider(localLLMService);
+    // Register webview and tree provider
+    context.subscriptions.push(vscode.window.registerWebviewViewProvider('aiCodePro.chat', chatProvider), vscode.window.createTreeView('aiCodePro.models', {
+        treeDataProvider: modelsTreeProvider,
+        showCollapseAll: false
+    }));
+    // Auto-discover models on startup
+    localLLMService.discoverModels().then(() => {
+        modelsTreeProvider.refresh();
+    });
     // Command: Show AI Chat
     const showChatCommand = vscode.commands.registerCommand('aiCodePro.showChat', () => {
         const panel = vscode.window.createWebviewPanel('aiCodeProChat', '🤖 AI Code Assistant Pro', vscode.ViewColumn.Two, {
@@ -204,6 +214,7 @@ function activate(context) {
         const models = await localLLMService.discoverModels();
         if (models.length > 0) {
             vscode.window.showInformationMessage(`🧠 Connected to ${models.length} local LLM model(s): ${models.map(m => m.name).join(', ')}`);
+            modelsTreeProvider.refresh(); // Refresh the tree view
         }
         else {
             vscode.window.showWarningMessage('🤖 No local LLM models found. Please ensure Ollama or LocalAI is running.');

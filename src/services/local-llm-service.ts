@@ -23,7 +23,14 @@ export class LocalLLMService {
 
     constructor() {
         this.endpoint = vscode.workspace.getConfiguration('aiCodePro').get('localLLMEndpoint', 'http://localhost:11434');
-        this.preferredModels = vscode.workspace.getConfiguration('aiCodePro').get('preferredModels', ['codellama', 'deepseek-coder', 'codegemma']);
+        this.preferredModels = vscode.workspace.getConfiguration('aiCodePro').get('preferredModels', [
+            // Smart defaults that work for most users
+            'codellama', 'codellama:7b', 'codellama:13b',
+            'deepseek-coder', 'deepseek-coder:6.7b', 'deepseek-coder:13b',
+            'dolphin-mixtral', 'dolphin-mixtral:8x7b',
+            'mistral', 'mistral:7b',
+            'codegemma', 'codegemma:7b'
+        ]);
         this.initializeModels();
     }
 
@@ -108,7 +115,12 @@ export class LocalLLMService {
             // Select best model for the task
             const selectedModel = this.selectBestModel(modelPreference);
             
+            console.log('🔍 Debug: Available models:', this.availableModels.length);
+            console.log('🔍 Debug: Model preference:', modelPreference);
+            console.log('🔍 Debug: Selected model:', selectedModel);
+            
             if (!selectedModel) {
+                console.error('❌ No suitable local LLM model available');
                 throw new Error('No suitable local LLM model available');
             }
 

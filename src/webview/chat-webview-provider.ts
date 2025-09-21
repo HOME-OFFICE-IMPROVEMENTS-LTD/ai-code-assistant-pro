@@ -67,9 +67,19 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
                 personality: personality
             });
         } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            const errorStack = error instanceof Error ? error.stack : 'No stack trace';
+            
+            console.error('❌ Chat error:', error);
+            console.error('❌ Error details:', {
+                message: errorMessage,
+                stack: errorStack,
+                text: text,
+                personality: personality
+            });
             webview.postMessage({
                 type: 'aiError',
-                text: 'Sorry, I encountered an error. Please try again.',
+                text: `Sorry, I encountered an error: ${errorMessage}. Please try again.`,
                 personality: personality
             });
         }
