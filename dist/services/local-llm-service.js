@@ -139,8 +139,9 @@ class LocalLLMService {
                     prompt: prompt,
                     stream: false,
                     options: {
-                        temperature: 0.1,
-                        top_p: 0.9,
+                        temperature: 0.05, // Much lower for consistency
+                        top_p: 0.85,
+                        repeat_penalty: 1.1,
                         max_tokens: vscode.workspace.getConfiguration('aiCodePro').get('maxResponseLength', 2048)
                     }
                 }, { timeout: 30000 });
@@ -174,7 +175,7 @@ class LocalLLMService {
                     messages: [
                         { role: 'user', content: prompt }
                     ],
-                    temperature: 0.1,
+                    temperature: 0.05, // Much lower for consistency
                     max_tokens: vscode.workspace.getConfiguration('aiCodePro').get('maxResponseLength', 2048)
                 }, { timeout: 30000 });
                 const processingTime = Date.now() - startTime;
