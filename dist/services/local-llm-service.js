@@ -139,12 +139,13 @@ class LocalLLMService {
                     prompt: prompt,
                     stream: false,
                     options: {
-                        temperature: 0.01, // Extremely low for maximum consistency
-                        top_p: 0.8,
-                        repeat_penalty: 1.2,
+                        temperature: 0.001, // Near-zero for absolute consistency
+                        top_p: 0.7,
+                        repeat_penalty: 1.3,
                         num_predict: vscode.workspace.getConfiguration('aiCodePro').get('maxResponseLength', 2048),
-                        stop: ["<|im_end|>"],
-                        seed: 42 // Fixed seed for reproducibility
+                        stop: ["<|im_end|>", "\n\n<|", "Human:", "Assistant:"],
+                        seed: 42, // Fixed seed for reproducibility
+                        num_ctx: 4096 // Larger context for better instruction following
                     }
                 }, { timeout: 30000 });
                 const processingTime = Date.now() - startTime;
@@ -181,10 +182,11 @@ class LocalLLMService {
                     messages: [
                         { role: 'user', content: prompt }
                     ],
-                    temperature: 0.01, // Extremely low for maximum consistency
-                    top_p: 0.8,
+                    temperature: 0.001, // Near-zero for absolute consistency
+                    top_p: 0.7,
                     max_tokens: vscode.workspace.getConfiguration('aiCodePro').get('maxResponseLength', 2048),
-                    seed: 42 // Fixed seed for reproducibility
+                    seed: 42, // Fixed seed for reproducibility
+                    stop: ["<|im_end|>", "\n\n<|", "Human:", "Assistant:"]
                 }, { timeout: 30000 });
                 const processingTime = Date.now() - startTime;
                 let responseText = response.data.choices[0].message.content || '';
@@ -339,34 +341,62 @@ class LocalLLMService {
             return response;
         }
         const expectedGreeting = `Hello! I'm ${personality.name}, your professional ${personality.specialty} specialist.`;
-        // Check if response starts with the correct greeting
+        // More aggressive validation - check if response starts with the exact greeting
         if (!response.startsWith(expectedGreeting)) {
-            console.log(`🔧 Correcting personality response for ${personality.name}`);
-            // Extract the actual content after any incorrect greeting
-            let cleanedResponse = response;
-            // Remove common incorrect greetings
+            console.log(`🔧 ENFORCING personality format for ${personality.name}`);
+            // Extract meaningful content from the response
+            let extractedContent = response;
+            // Remove any variation of greeting that doesn't match exactly
             const incorrectPatterns = [
-                /^Hello!? I'm an AI.*/i,
-                /^I'm an AI model.*/i,
-                /^As an AI.*/i,
-                /^I am an AI.*/i,
-                /^Hello!? I'm.*/i
+                /^Hello!?\s*I'm?\s*\w+,?\s*a?\s*(.*?)(consultant|specialist|expert|professional).*?\./i,
+                /^I\s+am\s+\w+,?\s*(.*?)(consultant|specialist|expert|professional).*?\./i,
+                /^Hi\s*(there)?\s*[\!\.]?\s*/i,
+                /^Hello!?\s*/i,
+                /^As\s+a\s+(.*?)(consultant|specialist|expert|professional)/i,
+                /^I'm\s+(happy\s+to\s+assist|here\s+to\s+help)/i
             ];
             for (const pattern of incorrectPatterns) {
-                cleanedResponse = cleanedResponse.replace(pattern, '');
+                extractedContent = extractedContent.replace(pattern, '');
             }
-            // Remove leading whitespace and get to the actual content
-            cleanedResponse = cleanedResponse.trim();
-            // If there's remaining content, prepend the correct greeting
-            if (cleanedResponse) {
-                return `${expectedGreeting} ${cleanedResponse}`;
+            // Clean up the response and extract actual helpful content
+            extractedContent = extractedContent.trim();
+            // Remove common filler phrases
+            const fillerPatterns = [
+                /^(In\s+any\s+way\s+that\s+I\s+can\.|you\s+in\s+any\s+way\s+that\s+I\s+can\.)/i,
+                /^(However,\s*)/i,
+                /^(My\s+primary\s+expertise\s+is)/i
+            ];
+            for (const pattern of fillerPatterns) {
+                extractedContent = extractedContent.replace(pattern, '');
+            }
+            extractedContent = extractedContent.trim();
+            // Generate VSCode-specific help based on personality
+            let vscodeHelp = this.generateVSCodeSpecificHelp(personality);
+            // If there's meaningful extracted content, combine it with VSCode help
+            if (extractedContent && extractedContent.length > 20) {
+                return `${expectedGreeting} ${vscodeHelp} ${extractedContent}`;
             }
             else {
-                // If response was entirely wrong, provide a basic correct response
-                return `${expectedGreeting} I can help you with ${personality.specialty.toLowerCase()} related questions and tasks. What would you like assistance with?`;
+                // Use just the VSCode-specific help if original response was poor
+                return `${expectedGreeting} ${vscodeHelp}`;
             }
         }
         return response;
+    }
+    generateVSCodeSpecificHelp(personality) {
+        const vscodeHelp = {
+            'buzzy': 'I can optimize your VSCode performance through extension management, settings.json tuning, and memory optimization. Let me help you identify performance bottlenecks and improve your development speed.',
+            'builder': 'I can help you architect your VSCode workspace with proper project structure, multi-folder organization, and tasks.json configuration. My expertise ensures scalable development environments.',
+            'scout': 'I can enhance your code quality through ESLint/Prettier setup, debugging configuration, and code review workflows. Let me help you establish quality assurance practices in VSCode.',
+            'guardian': 'I can secure your VSCode environment through extension vetting, credential management, and remote development security. Let me help protect your development workflow.',
+            'spark': 'I can introduce you to cutting-edge VSCode features, latest extensions, and AI-powered development tools. Let me help you discover innovative development approaches.',
+            'scribe': 'I can improve your documentation workflow through Markdown optimization, JSDoc setup, and knowledge base integration. Let me help you create clear, comprehensive documentation.',
+            'metrics': 'I can help you implement monitoring and analytics for your VSCode workflow, tracking productivity metrics and development performance. Let me provide data-driven insights.',
+            'flash': 'I can accelerate your development through automation, CI/CD integration, and rapid deployment workflows. Let me help you maximize development velocity.',
+            'honey': 'I can optimize your data handling and memory management in VSCode through efficient data structures and caching strategies. Let me help improve your application performance.',
+            'tester': 'I can establish comprehensive testing workflows in VSCode through test automation, debugging tools, and quality metrics. Let me help you build robust testing strategies.'
+        };
+        return vscodeHelp[personality.id] || `I can help you with ${personality.specialty.toLowerCase()} in VSCode.`;
     }
     getPerformanceStats(modelId) {
         return this.performanceMonitor.getModelStats(modelId);
