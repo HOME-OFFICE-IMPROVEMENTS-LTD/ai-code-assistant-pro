@@ -136,15 +136,22 @@ export class LocalLLMService {
                     prompt: prompt,
                     stream: false,
                     options: {
-                        temperature: 0.05, // Much lower for consistency
-                        top_p: 0.85,
-                        repeat_penalty: 1.1,
-                        max_tokens: vscode.workspace.getConfiguration('aiCodePro').get('maxResponseLength', 2048)
+                        temperature: 0.01, // Extremely low for maximum consistency
+                        top_p: 0.8,
+                        repeat_penalty: 1.2,
+                        num_predict: vscode.workspace.getConfiguration('aiCodePro').get('maxResponseLength', 2048),
+                        stop: ["<|im_end|>"],
+                        seed: 42 // Fixed seed for reproducibility
                     }
                 }, { timeout: 30000 });
 
                 const processingTime = Date.now() - startTime;
-                const responseText = response.data.response || response.data.content || '';
+                let responseText = response.data.response || response.data.content || '';
+                
+                // Validate and correct personality consistency if needed
+                if (personalityId) {
+                    responseText = this.validatePersonalityResponse(responseText, personalityId);
+                }
                 
                 // Record performance metrics
                 if (personalityId) {
@@ -175,12 +182,19 @@ export class LocalLLMService {
                     messages: [
                         { role: 'user', content: prompt }
                     ],
-                    temperature: 0.05, // Much lower for consistency
-                    max_tokens: vscode.workspace.getConfiguration('aiCodePro').get('maxResponseLength', 2048)
+                    temperature: 0.01, // Extremely low for maximum consistency
+                    top_p: 0.8,
+                    max_tokens: vscode.workspace.getConfiguration('aiCodePro').get('maxResponseLength', 2048),
+                    seed: 42 // Fixed seed for reproducibility
                 }, { timeout: 30000 });
 
                 const processingTime = Date.now() - startTime;
-                const responseText = response.data.choices[0].message.content || '';
+                let responseText = response.data.choices[0].message.content || '';
+                
+                // Validate and correct personality consistency if needed
+                if (personalityId) {
+                    responseText = this.validatePersonalityResponse(responseText, personalityId);
+                }
                 
                 // Record performance metrics
                 if (personalityId) {
@@ -341,6 +355,53 @@ export class LocalLLMService {
 
     private recordPerformanceMetric(metric: PerformanceMetric): void {
         this.performanceMonitor.recordMetric(metric);
+    }
+
+    private validatePersonalityResponse(response: string, personalityId: string): string {
+        // Import personality service to get personality details
+        const { AIPersonalityService } = require('./ai-personality-service');
+        const personalityService = new AIPersonalityService();
+        const personality = personalityService.getPersonality(personalityId);
+        
+        if (!personality) {
+            return response;
+        }
+
+        const expectedGreeting = `Hello! I'm ${personality.name}, your professional ${personality.specialty} specialist.`;
+        
+        // Check if response starts with the correct greeting
+        if (!response.startsWith(expectedGreeting)) {
+            console.log(`🔧 Correcting personality response for ${personality.name}`);
+            
+            // Extract the actual content after any incorrect greeting
+            let cleanedResponse = response;
+            
+            // Remove common incorrect greetings
+            const incorrectPatterns = [
+                /^Hello!? I'm an AI.*/i,
+                /^I'm an AI model.*/i,
+                /^As an AI.*/i,
+                /^I am an AI.*/i,
+                /^Hello!? I'm.*/i
+            ];
+            
+            for (const pattern of incorrectPatterns) {
+                cleanedResponse = cleanedResponse.replace(pattern, '');
+            }
+            
+            // Remove leading whitespace and get to the actual content
+            cleanedResponse = cleanedResponse.trim();
+            
+            // If there's remaining content, prepend the correct greeting
+            if (cleanedResponse) {
+                return `${expectedGreeting} ${cleanedResponse}`;
+            } else {
+                // If response was entirely wrong, provide a basic correct response
+                return `${expectedGreeting} I can help you with ${personality.specialty.toLowerCase()} related questions and tasks. What would you like assistance with?`;
+            }
+        }
+        
+        return response;
     }
 
     getPerformanceStats(modelId: string) {

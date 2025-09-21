@@ -27,6 +27,7 @@ export declare class LocalLLMService {
     getModelInfo(modelId: string): Promise<any>;
     private calculateResponseQuality;
     private recordPerformanceMetric;
+    private validatePersonalityResponse;
     getPerformanceStats(modelId: string): {
         avgResponseTime: number;
         avgQualityScore: number;
