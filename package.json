@@ -203,7 +203,18 @@
         },
         "aiCodePro.defaultPersonality": {
           "type": "string",
-          "enum": ["buzzy", "builder", "scout", "guardian", "spark", "scribe", "metrics", "flash", "honey", "tester"],
+          "enum": [
+            "buzzy",
+            "builder",
+            "scout",
+            "guardian",
+            "spark",
+            "scribe",
+            "metrics",
+            "flash",
+            "honey",
+            "tester"
+          ],
           "default": "buzzy",
           "description": "Default AI personality for quick queries"
         },
@@ -212,7 +223,12 @@
           "items": {
             "type": "string"
           },
-          "default": ["codellama", "deepseek-coder", "mistral", "dolphin-mixtral"],
+          "default": [
+            "codellama",
+            "deepseek-coder",
+            "mistral",
+            "dolphin-mixtral"
+          ],
           "description": "Your preferred local LLM models. Extension will automatically detect available models and use the best match for each task."
         },
         "aiCodePro.autoExplainOnSelect": {
@@ -237,7 +253,11 @@
         },
         "aiCodePro.privacyMode": {
           "type": "string",
-          "enum": ["strict", "moderate", "relaxed"],
+          "enum": [
+            "strict",
+            "moderate",
+            "relaxed"
+          ],
           "default": "strict",
           "description": "Privacy level for code analysis"
         },
@@ -283,20 +303,20 @@
     "publish": "vsce publish"
   },
   "devDependencies": {
-    "@types/vscode": "^1.104.0",
     "@types/node": "^20.19.14",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.0.0",
-    "typescript": "^5.0.0",
+    "@types/vscode": "^1.104.0",
+    "@typescript-eslint/eslint-plugin": "^8.44.0",
+    "@typescript-eslint/parser": "^8.44.0",
     "@vscode/test-electron": "^2.3.0",
-    "@vscode/vsce": "^2.22.0"
+    "@vscode/vsce": "^3.6.0",
+    "eslint": "^9.36.0",
+    "typescript": "^5.0.0"
   },
   "dependencies": {
     "axios": "^1.12.2",
-    "ws": "^8.14.0",
-    "openai": "^4.20.0",
-    "node-fetch": "^3.3.0"
+    "node-fetch": "^3.3.0",
+    "openai": "^5.22.0",
+    "ws": "^8.14.0"
   },
   "repository": {
     "type": "git",

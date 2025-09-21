@@ -121,7 +121,6 @@ class LocalLLMService {
     async generateResponse(prompt, modelPreference, personalityId, taskType) {
         const startTime = Date.now();
         let selectedModel = null;
-        let errorOccurred = false;
         try {
             // Select best model for the task
             selectedModel = this.selectBestModel(modelPreference);
@@ -221,7 +220,6 @@ class LocalLLMService {
             }
         }
         catch (error) {
-            errorOccurred = true;
             // Record error metrics
             if (selectedModel && personalityId) {
                 this.recordPerformanceMetric({
@@ -308,8 +306,9 @@ class LocalLLMService {
         // Auto-score response quality based on various factors
         let score = 0.5; // Base score
         // Length appropriateness (not too short, not too long)
-        if (response.length > 50 && response.length < 2000)
+        if (response.length > 50 && response.length < 2000) {
             score += 0.1;
+        }
         // Code detection
         if (prompt.toLowerCase().includes('code') || prompt.toLowerCase().includes('function')) {
             if (response.includes('```') || response.includes('def ') || response.includes('function')) {
@@ -317,8 +316,9 @@ class LocalLLMService {
             }
         }
         // Completeness (response seems complete)
-        if (!response.trim().endsWith('...') && response.length > 30)
+        if (!response.trim().endsWith('...') && response.length > 30) {
             score += 0.1;
+        }
         // Relevance (contains key terms from prompt)
         const promptWords = prompt.toLowerCase().split(' ').filter(w => w.length > 3);
         const responseWords = response.toLowerCase().split(' ');
@@ -344,7 +344,6 @@ class LocalLLMService {
         if (!personality) {
             return response;
         }
-        const expectedGreeting = `Hello! I'm ${personality.name}, your professional ${personality.specialty} specialist.`;
         // ULTIMATE OVERRIDE: Always generate perfect response regardless of model output
         console.log(`☢️ ULTIMATE OVERRIDE for ${personality.name} - Generating perfect response`);
         // Generate the perfect response from scratch every time
