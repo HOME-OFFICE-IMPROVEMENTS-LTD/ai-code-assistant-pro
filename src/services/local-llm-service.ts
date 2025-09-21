@@ -114,7 +114,6 @@ export class LocalLLMService {
     async generateResponse(prompt: string, modelPreference?: string, personalityId?: string, taskType?: string): Promise<LLMResponse> {
         const startTime = Date.now();
         let selectedModel: LocalLLMModel | null = null;
-        let errorOccurred = false;
         
         try {
             // Select best model for the task
@@ -228,8 +227,6 @@ export class LocalLLMService {
             }
 
         } catch (error) {
-            errorOccurred = true;
-            
             // Record error metrics
             if (selectedModel && personalityId) {
                 this.recordPerformanceMetric({
@@ -331,7 +328,7 @@ export class LocalLLMService {
         let score = 0.5; // Base score
         
         // Length appropriateness (not too short, not too long)
-        if (response.length > 50 && response.length < 2000) score += 0.1;
+        if (response.length > 50 && response.length < 2000) {score += 0.1;}
         
         // Code detection
         if (prompt.toLowerCase().includes('code') || prompt.toLowerCase().includes('function')) {
@@ -341,7 +338,7 @@ export class LocalLLMService {
         }
         
         // Completeness (response seems complete)
-        if (!response.trim().endsWith('...') && response.length > 30) score += 0.1;
+        if (!response.trim().endsWith('...') && response.length > 30) {score += 0.1;}
         
         // Relevance (contains key terms from prompt)
         const promptWords = prompt.toLowerCase().split(' ').filter(w => w.length > 3);
@@ -375,8 +372,6 @@ export class LocalLLMService {
             return response;
         }
 
-        const expectedGreeting = `Hello! I'm ${personality.name}, your professional ${personality.specialty} specialist.`;
-        
         // ULTIMATE OVERRIDE: Always generate perfect response regardless of model output
         console.log(`☢️ ULTIMATE OVERRIDE for ${personality.name} - Generating perfect response`);
         

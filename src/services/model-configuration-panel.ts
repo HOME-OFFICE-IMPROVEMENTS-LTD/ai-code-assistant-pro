@@ -147,7 +147,7 @@ export class ModelConfigurationPanel {
             const response = await this.llmService.generateResponse(testPrompt, model.id);
             
             const responseTime = Date.now() - startTime;
-            const qualityScore = this.calculateQualityScore(response.text, testPrompt);
+            const qualityScore = this.calculateQualityScore(response.text);
             
             const metrics: ModelPerformanceMetrics = {
                 responseTime,
@@ -173,21 +173,25 @@ export class ModelConfigurationPanel {
         }
     }
 
-    private calculateQualityScore(response: string, prompt: string): number {
+    private calculateQualityScore(response: string): number {
         // Auto-score based on response quality
         let score = 0.5; // Base score
         
         // Check for code presence
-        if (response.includes('def ') || response.includes('function')) score += 0.2;
+        if (response.includes('def ') || response.includes('function')) {
+            score += 0.2;
+        }
         
         // Check for proper structure
-        if (response.includes('return')) score += 0.15;
+        if (response.includes('return')) {
+            score += 0.15;
+        }
         
         // Check response length (not too short, not too long)
-        if (response.length > 50 && response.length < 500) score += 0.1;
+        if (response.length > 50 && response.length < 500) {score += 0.1;}
         
         // Check for Python syntax
-        if (response.includes('def add') || response.includes('def ')) score += 0.05;
+        if (response.includes('def add') || response.includes('def ')) {score += 0.05;}
         
         return Math.min(score, 1.0);
     }
@@ -197,12 +201,12 @@ export class ModelConfigurationPanel {
         let score = qualityScore * 0.6; // Quality is most important
         
         // Speed bonus (faster is better, but not too important)
-        if (responseTime < 5000) score += 0.2;
-        else if (responseTime < 10000) score += 0.1;
+        if (responseTime < 5000) {score += 0.2;}
+        else if (responseTime < 10000) {score += 0.1;}
         
         // Model type bonus
-        if (model.capabilities.includes('code-generation')) score += 0.15;
-        if (model.name.includes('coder') || model.name.includes('code')) score += 0.05;
+        if (model.capabilities.includes('code-generation')) {score += 0.15;}
+        if (model.name.includes('coder') || model.name.includes('code')) {score += 0.05;}
         
         return Math.min(score, 1.0);
     }
@@ -218,7 +222,7 @@ export class ModelConfigurationPanel {
         
         for (const personality of personalities) {
             const optimalModel = this.findOptimalModelForPersonality(personality, models);
-            const fallbackModels = this.findFallbackModels(optimalModel, models, personality);
+            const fallbackModels = this.findFallbackModels(optimalModel, models);
             
             if (optimalModel) {
                 const assignment: ModelAssignment = {
@@ -265,7 +269,7 @@ export class ModelConfigurationPanel {
     }
 
     private getBestPerformingModel(models: LocalLLMModel[]): LocalLLMModel | null {
-        if (models.length === 0) return null;
+        if (models.length === 0) {return null;}
         
         // Sort by recommendation score (auto-calculated performance)
         return models.sort((a, b) => {
@@ -275,8 +279,10 @@ export class ModelConfigurationPanel {
         })[0];
     }
 
-    private findFallbackModels(primaryModel: LocalLLMModel | null, models: LocalLLMModel[], personality: AIPersonality): LocalLLMModel[] {
-        if (!primaryModel) return [];
+    private findFallbackModels(primaryModel: LocalLLMModel | null, models: LocalLLMModel[]): LocalLLMModel[] {
+        if (!primaryModel) {
+            return [];
+        }
         
         // Auto-select fallback models with similar capabilities
         return models
@@ -405,11 +411,10 @@ export class ModelConfigurationPanel {
     }
 
     private async update() {
-        const webview = this.panel.webview;
-        this.panel.webview.html = await this.getHtmlForWebview(webview);
+        this.panel.webview.html = await this.getHtmlForWebview();
     }
 
-    private async getHtmlForWebview(webview: vscode.Webview): Promise<string> {
+    private async getHtmlForWebview(): Promise<string> {
         // HTML will be generated in the next step
         return this.generateConfigurationHTML();
     }
@@ -624,12 +629,12 @@ export class ModelConfigurationPanel {
     }
 
     private getStatusClass(performance?: ModelPerformanceMetrics): string {
-        if (!performance) return 'status-error';
+        if (!performance) {return 'status-error';}
         
         const score = performance.recommendationScore;
-        if (score >= 0.8) return 'status-optimal';
-        if (score >= 0.6) return 'status-good';
-        if (score >= 0.4) return 'status-warning';
+        if (score >= 0.8) {return 'status-optimal';}
+        if (score >= 0.6) {return 'status-good';}
+        if (score >= 0.4) {return 'status-warning';}
         return 'status-error';
     }
 }

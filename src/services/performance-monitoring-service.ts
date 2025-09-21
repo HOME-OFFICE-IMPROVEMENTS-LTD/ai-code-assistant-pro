@@ -43,7 +43,7 @@ export class PerformanceMonitoringService {
      * Record performance metric for a model-personality interaction
      */
     recordMetric(metric: PerformanceMetric): void {
-        if (!this.monitoringEnabled) return;
+        if (!this.monitoringEnabled) {return;}
 
         this.metrics.push(metric);
         
@@ -120,7 +120,7 @@ export class PerformanceMonitoringService {
     getBestModelForTask(taskType: string): string | null {
         const taskMetrics = this.metrics.filter(m => m.taskType === taskType);
         
-        if (taskMetrics.length === 0) return null;
+        if (taskMetrics.length === 0) {return null;}
 
         // Group by model and calculate scores
         const modelScores = new Map<string, number>();
@@ -155,7 +155,7 @@ export class PerformanceMonitoringService {
         for (const personalityId of personalities) {
             const personalityMetrics = this.getPersonalityMetrics(personalityId);
             
-            if (personalityMetrics.length === 0) continue;
+            if (personalityMetrics.length === 0) {continue;}
 
             // Find the best performing model for this personality
             const modelPerformance = new Map<string, number>();
@@ -246,7 +246,6 @@ export class PerformanceMonitoringService {
     // Private helper methods
 
     private updateModelHealth(metric: PerformanceMetric): void {
-        const currentHealth = this.healthStatus.get(metric.modelId);
         const recentMetrics = this.getModelMetrics(metric.modelId).slice(-20); // Last 20 requests
         
         const avgResponseTime = recentMetrics.reduce((sum, m) => sum + m.responseTime, 0) / recentMetrics.length;
@@ -299,7 +298,7 @@ export class PerformanceMonitoringService {
     }
 
     private performHealthChecks(): void {
-        if (!this.monitoringEnabled) return;
+        if (!this.monitoringEnabled) {return;}
 
         // Update health status for all models with recent activity
         const recentModels = new Set(
