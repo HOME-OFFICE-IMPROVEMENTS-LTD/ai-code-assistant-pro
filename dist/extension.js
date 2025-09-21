@@ -41,6 +41,7 @@ const local_llm_service_1 = require("./services/local-llm-service");
 const code_generation_service_1 = require("./services/code-generation-service");
 const chat_webview_provider_1 = require("./webview/chat-webview-provider");
 const models_tree_provider_1 = require("./providers/models-tree-provider");
+const model_configuration_panel_1 = require("./services/model-configuration-panel");
 function activate(context) {
     console.log('🤖 AI Code Assistant Pro is now active!');
     // Initialize services
@@ -256,8 +257,12 @@ function activate(context) {
     const modelSettingsCommand = vscode.commands.registerCommand('aiCodePro.modelSettings', () => {
         vscode.commands.executeCommand('workbench.action.openSettings', 'aiCodePro.localLLMEndpoint');
     });
+    // Command: Advanced Model Configuration (NEW!)
+    const advancedModelConfigCommand = vscode.commands.registerCommand('aiCodePro.advancedModelConfig', () => {
+        model_configuration_panel_1.ModelConfigurationPanel.createOrShow(context.extensionUri);
+    });
     // Register all commands
-    context.subscriptions.push(showChatCommand, askBuzzyCommand, askBuilderCommand, askScoutCommand, askGuardianCommand, generateCodeCommand, explainCodeCommand, optimizeCodeCommand, configureModelsCommand, connectModelsCommand, showModelStatsCommand, modelSettingsCommand);
+    context.subscriptions.push(showChatCommand, askBuzzyCommand, askBuilderCommand, askScoutCommand, askGuardianCommand, generateCodeCommand, explainCodeCommand, optimizeCodeCommand, configureModelsCommand, connectModelsCommand, showModelStatsCommand, modelSettingsCommand, advancedModelConfigCommand);
     // Show welcome message
     vscode.window.showInformationMessage('🤖 AI Code Assistant Pro activated! 10 AI personalities ready to help.', 'Open AI Chat', 'View Personalities').then(selection => {
         if (selection === 'Open AI Chat') {

@@ -4,6 +4,7 @@ import { LocalLLMService } from './services/local-llm-service';
 import { CodeGenerationService } from './services/code-generation-service';
 import { ChatWebviewProvider } from './webview/chat-webview-provider';
 import { ModelsTreeDataProvider } from './providers/models-tree-provider';
+import { ModelConfigurationPanel } from './services/model-configuration-panel';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('🤖 AI Code Assistant Pro is now active!');
@@ -282,6 +283,11 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.executeCommand('workbench.action.openSettings', 'aiCodePro.localLLMEndpoint');
     });
 
+    // Command: Advanced Model Configuration (NEW!)
+    const advancedModelConfigCommand = vscode.commands.registerCommand('aiCodePro.advancedModelConfig', () => {
+        ModelConfigurationPanel.createOrShow(context.extensionUri);
+    });
+
     // Register all commands
     context.subscriptions.push(
         showChatCommand,
@@ -295,7 +301,8 @@ export function activate(context: vscode.ExtensionContext) {
         configureModelsCommand,
         connectModelsCommand,
         showModelStatsCommand,
-        modelSettingsCommand
+        modelSettingsCommand,
+        advancedModelConfigCommand
     );
 
     // Show welcome message
