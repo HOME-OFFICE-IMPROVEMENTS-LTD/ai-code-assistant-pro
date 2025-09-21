@@ -49,7 +49,9 @@ class CodeGenerationService {
             // Enhance prompt with personality context and language
             const enhancedPrompt = this.buildCodeGenerationPrompt(personality, prompt, language);
             // Generate code using local LLM
-            const response = await this.llmService.generateResponse(enhancedPrompt, personality.preferredModels[0]);
+            const response = await this.llmService.generateResponse(enhancedPrompt, personality.preferredModels[0], personalityId, // Pass personalityId to trigger Ultimate Override
+            'code-generation' // Task type
+            );
             // Extract and clean the generated code
             return this.extractCode(response.text);
         }
@@ -66,7 +68,9 @@ class CodeGenerationService {
             }
             // Use personality-specific prompt
             const personalityPrompt = this.personalityService.getPersonalityPrompt(personalityId, prompt);
-            const response = await this.llmService.generateResponse(personalityPrompt, personality.preferredModels[0]);
+            const response = await this.llmService.generateResponse(personalityPrompt, personality.preferredModels[0], personalityId, // Pass personalityId to trigger Ultimate Override
+            'chat' // Task type
+            );
             return this.formatPersonalityResponse(personality, response.text);
         }
         catch (error) {
