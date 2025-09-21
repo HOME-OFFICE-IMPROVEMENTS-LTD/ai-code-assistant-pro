@@ -51,27 +51,30 @@ A VS Code extension with 10 specialized AI personalities that work with your loc
 
 Choose the right personality for your task:
 
-**Code Specialists:**
+**Performance & Architecture:**
 
-- **CodeMaster** - Complex programming tasks
-- **BugHunter** - Debugging and error fixing
-- **OptimizeAI** - Performance optimization
+- **⚡ Buzzy** - Performance optimization and system efficiency
+- **🔨 Builder** - Software architecture and design patterns
 
-**Creative Team:**
+**Analysis & Security:**
 
-- **CreativeGenius** - UI/UX and innovative solutions
-- **DocumentationAI** - Technical writing
-- **ExperimentalAI** - Latest techniques and frameworks
+- **🔍 Scout** - Code analysis and quality assurance
+- **🛡️ Guardian** - Security auditing and compliance
 
-**Quality & Security:**
+**Innovation & Documentation:**
 
-- **SecurityGuard** - Security analysis
-- **TestMaster** - Testing strategies
-- **ReviewMaster** - Code review
+- **✨ Spark** - Creative solutions and modern technologies
+- **📝 Scribe** - Technical documentation and communication
 
-**Learning:**
+**Data & Analytics:**
 
-- **TutorAI** - Teaching and explanations
+- **📊 Metrics** - Analytics and performance monitoring  
+- **🍯 Honey** - Data management and storage optimization
+
+**Speed & Quality:**
+
+- **⚡ Flash** - CI/CD automation and rapid development
+- **🧪 Tester** - Testing strategies and quality assurance
 
 ## Model Recommendations
 
