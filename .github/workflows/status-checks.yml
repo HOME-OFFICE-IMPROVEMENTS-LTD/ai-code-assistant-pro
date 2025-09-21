@@ -1,0 +1,81 @@
+name: Status Checks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quick-check:
+    name: Quick Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: TypeScript Check
+      run: npm run compile
+      
+    - name: Lint Check
+      run: npm run lint
+      
+    - name: Quick Tests
+      run: npm test
+      
+    - name: Package Check
+      run: npm run package
+      
+    - name: Status Summary
+      run: |
+        echo "## ✅ Status Check Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **TypeScript Compilation**: ✅ Passed" >> $GITHUB_STEP_SUMMARY
+        echo "- **ESLint Validation**: ✅ Passed" >> $GITHUB_STEP_SUMMARY
+        echo "- **Unit Tests**: ✅ Passed" >> $GITHUB_STEP_SUMMARY
+        echo "- **Package Build**: ✅ Passed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🎉 All quality checks passed!" >> $GITHUB_STEP_SUMMARY
+
+  dependency-check:
+    name: Dependency Security Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Security Audit
+      run: npm audit --audit-level=moderate
+      
+    - name: Check for known vulnerabilities
+      run: |
+        AUDIT_RESULT=$(npm audit --audit-level=moderate --json 2>/dev/null || echo '{"vulnerabilities":{}}')
+        VULN_COUNT=$(echo $AUDIT_RESULT | jq '.metadata.vulnerabilities.total // 0')
+        
+        echo "## 🔒 Security Audit Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **Total Vulnerabilities**: $VULN_COUNT" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "$VULN_COUNT" -eq 0 ]; then
+          echo "- **Status**: ✅ No vulnerabilities found" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- **Status**: ⚠️ Vulnerabilities detected" >> $GITHUB_STEP_SUMMARY
+        fi

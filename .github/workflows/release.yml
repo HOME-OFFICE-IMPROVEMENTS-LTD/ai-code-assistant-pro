@@ -1,0 +1,197 @@
+name: Release Management
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version_type:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+        - patch
+        - minor
+        - major
+
+jobs:
+  prepare-release:
+    name: Prepare Release
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    
+    outputs:
+      new_version: ${{ steps.version.outputs.new_version }}
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run full test suite
+      run: |
+        npm run compile
+        npm run lint
+        npm run test:coverage
+        npm audit --audit-level=moderate
+        
+    - name: Bump version
+      id: version
+      run: |
+        # Configure git
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Bump version in package.json
+        NEW_VERSION=$(npm version ${{ github.event.inputs.version_type }} --no-git-tag-version)
+        echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+        
+        # Update CHANGELOG
+        echo "## $NEW_VERSION - $(date -u +%Y-%m-%d)" >> CHANGELOG_NEW.md
+        echo "" >> CHANGELOG_NEW.md
+        echo "### Added" >> CHANGELOG_NEW.md
+        echo "- Automated release via GitHub Actions" >> CHANGELOG_NEW.md
+        echo "" >> CHANGELOG_NEW.md
+        cat CHANGELOG.md >> CHANGELOG_NEW.md
+        mv CHANGELOG_NEW.md CHANGELOG.md
+        
+        # Commit changes
+        git add package.json package-lock.json CHANGELOG.md
+        git commit -m "chore: bump version to $NEW_VERSION"
+        git push
+        
+    - name: Build package
+      run: npm run package
+      
+    - name: Upload package artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-package
+        path: '*.vsix'
+
+  create-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: prepare-release
+    if: github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        
+    - name: Download package artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: release-package
+        
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ needs.prepare-release.outputs.new_version }}
+        name: AI Code Assistant Pro ${{ needs.prepare-release.outputs.new_version }}
+        body: |
+          ## AI Code Assistant Pro ${{ needs.prepare-release.outputs.new_version }}
+          
+          ### Features
+          - 10 AI personalities for specialized coding assistance
+          - Ultimate Override system for flexible AI interaction
+          - Multiple AI model support (OpenAI, Local LLMs, Ollama)
+          - Advanced code generation and explanation
+          - Performance monitoring and optimization
+          
+          ### Quality Assurance
+          - ✅ All tests pass
+          - ✅ Security audit clean
+          - ✅ Code quality standards met
+          - ✅ TypeScript compilation successful
+          - ✅ ESLint validation passed
+          
+          ### Installation
+          Download the `.vsix` file and install via VS Code command palette:
+          `Extensions: Install from VSIX...`
+          
+          Or install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=HOME-OFFICE-IMPROVEMENTS-LTD.ai-code-assistant-pro)
+        files: '*.vsix'
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-marketplace:
+    name: Publish to VS Code Marketplace
+    runs-on: ubuntu-latest
+    needs: [prepare-release, create-release]
+    if: github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Download package artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: release-package
+        
+    - name: Publish to Marketplace
+      run: npx vsce publish --packagePath *.vsix
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      if: env.VSCE_PAT != ''
+      
+    - name: Notify success
+      run: |
+        echo "🎉 Successfully published AI Code Assistant Pro ${{ needs.prepare-release.outputs.new_version }} to VS Code Marketplace!"
+        echo "📦 Extension is now available for installation"
+
+  automated-release:
+    name: Automated Release (on Git Release)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build and package
+      run: |
+        npm run compile
+        npm run package
+        
+    - name: Publish to Marketplace
+      run: npx vsce publish --packagePath *.vsix
+      env:
+        VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      if: env.VSCE_PAT != ''
