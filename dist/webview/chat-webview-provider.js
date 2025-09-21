@@ -22,7 +22,9 @@ class ChatWebviewProvider {
     async handleMessage(message) {
         switch (message.type) {
             case 'sendMessage':
-                await this.handleUserMessage(message.text, message.personality);
+                if (message.text) {
+                    await this.handleUserMessage(message.text, message.personality || 'scout');
+                }
                 break;
         }
     }

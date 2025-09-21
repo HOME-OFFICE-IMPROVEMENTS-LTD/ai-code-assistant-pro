@@ -11,6 +11,75 @@ export interface LLMResponse {
     tokens: number;
     processingTime: number;
 }
+export interface OllamaModel {
+    name: string;
+    size?: number | string;
+    digest?: string;
+    modified_at?: string;
+}
+export interface OllamaModelsResponse {
+    models?: OllamaModel[];
+}
+export interface LlamaCppModel {
+    model: string;
+    status: string;
+    loaded: boolean;
+}
+export interface LocalAIModel {
+    id: string;
+    object: string;
+    created?: number;
+    owned_by?: string;
+}
+export interface LocalAIModelsResponse {
+    data?: LocalAIModel[];
+    object: string;
+}
+export interface OpenAICompatibleResponse {
+    choices: Array<{
+        message: {
+            content: string;
+        };
+    }>;
+    usage?: {
+        total_tokens: number;
+    };
+}
+export interface OpenAICompatibleResponse {
+    choices: Array<{
+        message: {
+            content: string;
+        };
+    }>;
+    usage?: {
+        total_tokens: number;
+    };
+}
+export interface ModelInfo {
+    name?: string;
+    size?: number;
+    digest?: string;
+    details?: {
+        parent_model?: string;
+        format?: string;
+        family?: string;
+        families?: string[];
+        parameter_size?: string;
+        quantization_level?: string;
+    };
+    template?: string;
+    modified_at?: string;
+}
+export interface OptimalConfigAssignment {
+    personality: string;
+    model: string;
+    reason: string;
+}
+export interface OptimalModelConfiguration {
+    assignments?: OptimalConfigAssignment[];
+    lastOptimized?: string;
+    version?: number;
+}
 export declare class LocalLLMService {
     private endpoint;
     private availableModels;
@@ -24,7 +93,7 @@ export declare class LocalLLMService {
     private selectBestModel;
     getAvailableModels(): LocalLLMModel[];
     testConnection(): Promise<boolean>;
-    getModelInfo(modelId: string): Promise<any>;
+    getModelInfo(modelId: string): Promise<ModelInfo | null>;
     private calculateResponseQuality;
     private recordPerformanceMetric;
     private validatePersonalityResponse;

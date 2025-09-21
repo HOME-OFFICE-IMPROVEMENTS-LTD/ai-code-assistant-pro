@@ -1,6 +1,13 @@
 import * as vscode from 'vscode';
 import { CodeGenerationService } from '../services/code-generation-service';
 
+export interface WebviewMessage {
+    type: string;
+    text?: string;
+    personality?: string;
+    [key: string]: unknown;
+}
+
 export class ChatWebviewProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = 'aiCodePro.chat';
     private _view?: vscode.WebviewView;
@@ -40,10 +47,12 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
         );
     }
 
-    private async handleMessage(message: any) {
+    private async handleMessage(message: WebviewMessage) {
         switch (message.type) {
             case 'sendMessage':
-                await this.handleUserMessage(message.text, message.personality);
+                if (message.text) {
+                    await this.handleUserMessage(message.text, message.personality || 'scout');
+                }
                 break;
         }
     }

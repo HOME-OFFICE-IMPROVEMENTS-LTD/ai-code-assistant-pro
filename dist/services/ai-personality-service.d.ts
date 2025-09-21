@@ -9,6 +9,13 @@ export interface AIPersonality {
     interactionStyle: 'concise' | 'detailed' | 'conversational' | 'technical';
     expertise: string[];
 }
+export interface PersonalityStats {
+    name: string;
+    specialty: string;
+    expertiseCount: number;
+    interactionStyle: string;
+    preferredModels: string[];
+}
 export declare class AIPersonalityService {
     private personalities;
     constructor();
@@ -19,7 +26,7 @@ export declare class AIPersonalityService {
     getPersonalityPrompt(id: string, userPrompt: string): string;
     getRecommendedPersonality(codeType: string, taskType: string): AIPersonality | undefined;
     getPersonalityStats(): {
-        [key: string]: any;
+        [key: string]: PersonalityStats;
     };
 }
 //# sourceMappingURL=ai-personality-service.d.ts.map

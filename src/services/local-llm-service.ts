@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as vscode from 'vscode';
 import { PerformanceMonitoringService, PerformanceMetric } from './performance-monitoring-service';
+import { AIPersonality } from './ai-personality-service';
 
 export interface LocalLLMModel {
     name: string;
@@ -15,6 +16,85 @@ export interface LLMResponse {
     model: string;
     tokens: number;
     processingTime: number;
+}
+
+export interface OllamaModel {
+    name: string;
+    size?: number | string;
+    digest?: string;
+    modified_at?: string;
+}
+
+export interface OllamaModelsResponse {
+    models?: OllamaModel[];
+}
+
+export interface LlamaCppModel {
+    model: string;
+    status: string;
+    loaded: boolean;
+}
+
+export interface LocalAIModel {
+    id: string;
+    object: string;
+    created?: number;
+    owned_by?: string;
+}
+
+export interface LocalAIModelsResponse {
+    data?: LocalAIModel[];
+    object: string;
+}
+
+export interface OpenAICompatibleResponse {
+    choices: Array<{
+        message: {
+            content: string;
+        };
+    }>;
+    usage?: {
+        total_tokens: number;
+    };
+}
+
+export interface OpenAICompatibleResponse {
+    choices: Array<{
+        message: {
+            content: string;
+        };
+    }>;
+    usage?: {
+        total_tokens: number;
+    };
+}
+
+export interface ModelInfo {
+    name?: string;
+    size?: number;
+    digest?: string;
+    details?: {
+        parent_model?: string;
+        format?: string;
+        family?: string;
+        families?: string[];
+        parameter_size?: string;
+        quantization_level?: string;
+    };
+    template?: string;
+    modified_at?: string;
+}
+
+export interface OptimalConfigAssignment {
+    personality: string;
+    model: string;
+    reason: string;
+}
+
+export interface OptimalModelConfiguration {
+    assignments?: OptimalConfigAssignment[];
+    lastOptimized?: string;
+    version?: number;
 }
 
 export class LocalLLMService {
@@ -48,12 +128,12 @@ export class LocalLLMService {
     async discoverModels(): Promise<LocalLLMModel[]> {
         try {
             // Try Ollama API first
-            const response = await axios.get(`${this.endpoint}/api/tags`, { timeout: 5000 });
+            const response = await axios.get<OllamaModelsResponse>(`${this.endpoint}/api/tags`, { timeout: 5000 });
             
-            this.availableModels = response.data.models?.map((model: any) => ({
+            this.availableModels = response.data.models?.map((model: OllamaModel) => ({
                 name: model.name,
                 id: model.name,
-                size: model.size || 'Unknown',
+                size: typeof model.size === 'number' ? `${(model.size / 1024 / 1024 / 1024).toFixed(1)}GB` : model.size || 'Unknown',
                 status: 'available' as const,
                 capabilities: this.getModelCapabilities(model.name)
             })) || [];
@@ -61,12 +141,12 @@ export class LocalLLMService {
             console.log(`🧠 Discovered ${this.availableModels.length} local LLM models`);
             return this.availableModels;
 
-        } catch (error) {
+        } catch {
             // Fallback: Try LocalAI or other endpoints
             try {
-                const localAIResponse = await axios.get(`${this.endpoint}/v1/models`, { timeout: 5000 });
+                const localAIResponse = await axios.get<LocalAIModelsResponse>(`${this.endpoint}/v1/models`, { timeout: 5000 });
                 
-                this.availableModels = localAIResponse.data.data?.map((model: any) => ({
+                this.availableModels = localAIResponse.data.data?.map((model: LocalAIModel) => ({
                     name: model.id,
                     id: model.id,
                     size: 'Unknown',
@@ -76,7 +156,7 @@ export class LocalLLMService {
 
                 return this.availableModels;
             } catch (localAIError) {
-                console.error('No local LLM service found:', error);
+                console.error('No local LLM service found:', localAIError);
                 vscode.window.showWarningMessage(
                     '🤖 No local LLM service detected. Install Ollama or LocalAI to use AI features.',
                     'Install Ollama',
@@ -178,7 +258,7 @@ export class LocalLLMService {
                     processingTime
                 };
 
-            } catch (ollamaError) {
+            } catch {
                 // Try OpenAI-compatible format (LocalAI, etc.)
                 const response = await axios.post(`${this.endpoint}/v1/chat/completions`, {
                     model: selectedModel.id,
@@ -253,17 +333,17 @@ export class LocalLLMService {
 
         // Check for optimal configuration from Advanced Model Configuration
         const config = vscode.workspace.getConfiguration('aiCodePro');
-        const optimalConfig = config.get('optimalModelConfiguration') as any;
+        const optimalConfig = config.get('optimalModelConfiguration') as OptimalModelConfiguration;
         
         if (optimalConfig?.assignments && preference) {
             // Find assignment for this personality
-            const assignment = optimalConfig.assignments.find((a: any) => 
-                preference.includes(a.personalityId) || a.personalityId === preference
+            const assignment = optimalConfig.assignments.find((a: OptimalConfigAssignment) => 
+                preference.includes(a.personality) || a.personality === preference
             );
             
             if (assignment) {
                 const assignedModel = this.availableModels.find(m => 
-                    m.id === assignment.modelId || m.name === assignment.modelId
+                    m.id === assignment.model || m.name === assignment.model
                 );
                 if (assignedModel) {
                     console.log(`🎯 Using optimal assignment: ${assignedModel.name} for ${preference}`);
@@ -304,12 +384,12 @@ export class LocalLLMService {
         try {
             const response = await this.generateResponse('Hello! Please respond with just "OK" to test the connection.');
             return response.text.trim().toLowerCase().includes('ok');
-        } catch (error) {
+        } catch {
             return false;
         }
     }
 
-    async getModelInfo(modelId: string): Promise<any> {
+    async getModelInfo(modelId: string): Promise<ModelInfo | null> {
         try {
             // Try Ollama show endpoint
             const response = await axios.post(`${this.endpoint}/api/show`, {
@@ -379,7 +459,7 @@ export class LocalLLMService {
         return this.generatePerfectPersonalityResponse(personality);
     }
 
-    private generatePerfectPersonalityResponse(personality: any): string {
+    private generatePerfectPersonalityResponse(personality: AIPersonality): string {
         const expectedGreeting = `Hello! I'm ${personality.name}, your professional ${personality.specialty} specialist.`;
         
         // Perfect VSCode-specific responses for each personality
@@ -408,7 +488,7 @@ export class LocalLLMService {
         return perfectResponses[personality.id] || `${expectedGreeting} I specialize in ${personality.specialty.toLowerCase()} and provide expert VSCode guidance tailored to your development needs. How can I assist you with optimizing your VSCode experience?`;
     }
 
-    private generateExpertiseBasedResponse(personality: any): string {
+    private generateExpertiseBasedResponse(personality: AIPersonality): string {
         const expertResponses: { [key: string]: string } = {
             'buzzy': 'I can analyze your VSCode performance bottlenecks, optimize extension load times, and tune your settings.json for maximum efficiency. Let me help you profile memory usage and improve your development speed with concrete performance metrics.',
             'builder': 'I can architect your VSCode workspace with proper multi-folder organization, configure robust build systems through tasks.json, and establish scalable development environments for your team. My expertise ensures maintainable project structures.',
@@ -463,7 +543,7 @@ export class LocalLLMService {
         return response;
     }
 
-    private generateVSCodeSpecificHelp(personality: any): string {
+    private generateVSCodeSpecificHelp(personality: AIPersonality): string {
         const vscodeHelp: { [key: string]: string } = {
             'buzzy': 'I can optimize your VSCode performance through extension management, settings.json tuning, and memory optimization. Let me help you identify performance bottlenecks and improve your development speed.',
             'builder': 'I can help you architect your VSCode workspace with proper project structure, multi-folder organization, and tasks.json configuration. My expertise ensures scalable development environments.',

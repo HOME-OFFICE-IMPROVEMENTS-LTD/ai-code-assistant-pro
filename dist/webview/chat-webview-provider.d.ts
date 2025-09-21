@@ -1,5 +1,11 @@
 import * as vscode from 'vscode';
 import { CodeGenerationService } from '../services/code-generation-service';
+export interface WebviewMessage {
+    type: string;
+    text?: string;
+    personality?: string;
+    [key: string]: unknown;
+}
 export declare class ChatWebviewProvider implements vscode.WebviewViewProvider {
     private readonly _extensionUri;
     private readonly _codeGenerationService;

@@ -19,6 +19,16 @@ export interface CodeGenerationResponse {
     suggestions: string[];
 }
 
+export interface PersonalityCapability {
+    name: string;
+    emoji: string;
+    specialty: string;
+    description: string;
+    expertise: string[];
+    interactionStyle: string;
+    availableActions: string[];
+}
+
 export class CodeGenerationService {
     constructor(
         private llmService: LocalLLMService,
@@ -193,9 +203,9 @@ Response format:
         return 'typescript';
     }
 
-    async getPersonalityCapabilities(): Promise<{ [key: string]: any }> {
+    async getPersonalityCapabilities(): Promise<{ [key: string]: PersonalityCapability }> {
         const personalities = this.personalityService.getAllPersonalities();
-        const capabilities: { [key: string]: any } = {};
+        const capabilities: { [key: string]: PersonalityCapability } = {};
 
         personalities.forEach(personality => {
             capabilities[personality.id] = {

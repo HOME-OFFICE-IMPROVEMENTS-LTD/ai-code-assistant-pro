@@ -20,6 +20,31 @@ export interface ModelHealthStatus {
     recommendationScore: number;
 }
 
+export interface StoredMetric {
+    modelId: string;
+    personalityId: string;
+    responseTime: number;
+    tokenCount: number;
+    qualityScore: number;
+    errorRate: number;
+    timestamp: string;
+    taskType: string;
+}
+
+export interface StoredHealthStatus {
+    modelId: string;
+    isHealthy: boolean;
+    avgResponseTime: number;
+    successRate: number;
+    lastHealthCheck: string;
+    recommendationScore: number;
+}
+
+export interface StoredData {
+    metrics?: StoredMetric[];
+    healthStatus?: Array<[string, StoredHealthStatus]>;
+}
+
 export class PerformanceMonitoringService {
     private static instance: PerformanceMonitoringService;
     private metrics: PerformanceMetric[] = [];
@@ -331,17 +356,17 @@ export class PerformanceMonitoringService {
     private loadStoredMetrics(): void {
         try {
             const config = vscode.workspace.getConfiguration('aiCodePro');
-            const stored = config.get('performanceMetrics') as any;
+            const stored = config.get('performanceMetrics') as StoredData;
             
             if (stored?.metrics) {
-                this.metrics = stored.metrics.map((m: any) => ({
+                this.metrics = stored.metrics.map((m: StoredMetric) => ({
                     ...m,
                     timestamp: new Date(m.timestamp)
                 }));
             }
             
             if (stored?.healthStatus) {
-                this.healthStatus = new Map(stored.healthStatus.map(([id, health]: [string, any]) => [
+                this.healthStatus = new Map(stored.healthStatus.map(([id, health]: [string, StoredHealthStatus]) => [
                     id,
                     { ...health, lastHealthCheck: new Date(health.lastHealthCheck) }
                 ]));

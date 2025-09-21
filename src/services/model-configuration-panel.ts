@@ -159,7 +159,7 @@ export class ModelConfigurationPanel {
 
             this.performanceData.set(model.id, metrics);
             return metrics;
-        } catch (error) {
+        } catch {
             const metrics: ModelPerformanceMetrics = {
                 responseTime: 0,
                 successRate: 0,

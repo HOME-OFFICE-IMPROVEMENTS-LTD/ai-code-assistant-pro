@@ -71,14 +71,14 @@ class LocalLLMService {
             this.availableModels = response.data.models?.map((model) => ({
                 name: model.name,
                 id: model.name,
-                size: model.size || 'Unknown',
+                size: typeof model.size === 'number' ? `${(model.size / 1024 / 1024 / 1024).toFixed(1)}GB` : model.size || 'Unknown',
                 status: 'available',
                 capabilities: this.getModelCapabilities(model.name)
             })) || [];
             console.log(`🧠 Discovered ${this.availableModels.length} local LLM models`);
             return this.availableModels;
         }
-        catch (error) {
+        catch {
             // Fallback: Try LocalAI or other endpoints
             try {
                 const localAIResponse = await axios_1.default.get(`${this.endpoint}/v1/models`, { timeout: 5000 });
@@ -92,7 +92,7 @@ class LocalLLMService {
                 return this.availableModels;
             }
             catch (localAIError) {
-                console.error('No local LLM service found:', error);
+                console.error('No local LLM service found:', localAIError);
                 vscode.window.showWarningMessage('🤖 No local LLM service detected. Install Ollama or LocalAI to use AI features.', 'Install Ollama', 'Configure Endpoint').then(selection => {
                     if (selection === 'Install Ollama') {
                         vscode.env.openExternal(vscode.Uri.parse('https://ollama.ai'));
@@ -176,7 +176,7 @@ class LocalLLMService {
                     processingTime
                 };
             }
-            catch (ollamaError) {
+            catch {
                 // Try OpenAI-compatible format (LocalAI, etc.)
                 const response = await axios_1.default.post(`${this.endpoint}/v1/chat/completions`, {
                     model: selectedModel.id,
@@ -246,9 +246,9 @@ class LocalLLMService {
         const optimalConfig = config.get('optimalModelConfiguration');
         if (optimalConfig?.assignments && preference) {
             // Find assignment for this personality
-            const assignment = optimalConfig.assignments.find((a) => preference.includes(a.personalityId) || a.personalityId === preference);
+            const assignment = optimalConfig.assignments.find((a) => preference.includes(a.personality) || a.personality === preference);
             if (assignment) {
-                const assignedModel = this.availableModels.find(m => m.id === assignment.modelId || m.name === assignment.modelId);
+                const assignedModel = this.availableModels.find(m => m.id === assignment.model || m.name === assignment.model);
                 if (assignedModel) {
                     console.log(`🎯 Using optimal assignment: ${assignedModel.name} for ${preference}`);
                     return assignedModel;
@@ -285,7 +285,7 @@ class LocalLLMService {
             const response = await this.generateResponse('Hello! Please respond with just "OK" to test the connection.');
             return response.text.trim().toLowerCase().includes('ok');
         }
-        catch (error) {
+        catch {
             return false;
         }
     }

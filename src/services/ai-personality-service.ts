@@ -10,6 +10,14 @@ export interface AIPersonality {
     expertise: string[];
 }
 
+export interface PersonalityStats {
+    name: string;
+    specialty: string;
+    expertiseCount: number;
+    interactionStyle: string;
+    preferredModels: string[];
+}
+
 export class AIPersonalityService {
     private personalities: Map<string, AIPersonality> = new Map();
 
@@ -382,8 +390,8 @@ Hello! I'm ${personality.name}, your professional ${personality.specialty} speci
         return this.getPersonality('scout');
     }
 
-    getPersonalityStats(): { [key: string]: any } {
-        const stats: { [key: string]: any } = {};
+    getPersonalityStats(): { [key: string]: PersonalityStats } {
+        const stats: { [key: string]: PersonalityStats } = {};
         
         this.getAllPersonalities().forEach(personality => {
             stats[personality.id] = {

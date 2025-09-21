@@ -15,6 +15,15 @@ export interface CodeGenerationResponse {
     confidence: number;
     suggestions: string[];
 }
+export interface PersonalityCapability {
+    name: string;
+    emoji: string;
+    specialty: string;
+    description: string;
+    expertise: string[];
+    interactionStyle: string;
+    availableActions: string[];
+}
 export declare class CodeGenerationService {
     private llmService;
     private personalityService;
@@ -34,7 +43,7 @@ export declare class CodeGenerationService {
     private detectTestFramework;
     private detectLanguage;
     getPersonalityCapabilities(): Promise<{
-        [key: string]: any;
+        [key: string]: PersonalityCapability;
     }>;
     private getPersonalityActions;
     generateSmartSuggestions(): Promise<string[]>;
