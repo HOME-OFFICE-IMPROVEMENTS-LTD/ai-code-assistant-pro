@@ -1,7 +1,7 @@
 # AI Code Assistant Pro
 
 [![VS Code Marketplace](https://img.shields.io/badge/VS%20Code-Marketplace-blue?logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=hoiltd-com.ai-code-assistant-pro)
-[![Version](https://img.shields.io/badge/version-1.1.1-green)](https://marketplace.visualstudio.com/items?itemName=hoiltd-com.ai-code-assistant-pro)
+[![Version](https://img.shields.io/badge/version-1.1.2-green)](https://marketplace.visualstudio.com/items?itemName=hoiltd-com.ai-code-assistant-pro)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 A VS Code extension with 10 specialized AI personalities that work with your local LLM setup.
